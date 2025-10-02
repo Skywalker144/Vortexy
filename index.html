@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风扇性能比较工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>风扇性能比较工具</h1>
+    </header>
+
+    <main class="container">
+        <div id="controls-panel" class="panel">
+            <div id="project-selector">
+                <h2>选择项目:</h2>
+                <select id="project-select"></select>
+            </div>
+            <div id="fan-selector">
+                <h2>选择风扇进行比较:</h2>
+                <div id="select-all-container">
+                    <label>
+                        <input type="checkbox" id="select-all-checkbox">
+                        <strong>全选/全不选</strong>
+                    </label>
+                </div>
+                <div id="fan-list">
+                </div>
+            </div>
+        </div>
+
+        <div id="right-column">
+            <div id="chart-container">
+                <div id="chart" class="panel"></div>
+            </div>
+            <div id="description-container" class="panel">
+                <!-- Project description will be inserted here -->
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <script src="main.js"></script>
+
+</body>
+</html>

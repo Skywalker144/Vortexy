@@ -1,0 +1,144 @@
+/* 全局样式和字体设置 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f9;
+    color: #333;
+}
+
+header {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+h1, h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #2c3e50;
+}
+
+h2 {
+    margin-top: 0;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+.panel {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.07);
+    padding: 20px;
+}
+
+/* 左侧控制面板的样式 */
+#controls-panel {
+    width: 25%;
+    max-width: 300px;
+    height: calc(100vh - 120px); /* 视口高度减去header和padding */
+    display: flex;
+    flex-direction: column;
+}
+
+#project-selector {
+    margin-bottom: 20px;
+}
+
+#project-select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.95em;
+}
+
+/* 左侧风扇选择区域的样式 */
+#fan-selector {
+    flex-grow: 1;
+    overflow-y: auto; /* 如果风扇太多，则出现滚动条 */
+    display: flex;
+    flex-direction: column;
+}
+
+#fan-selector h2 {
+    margin-top: 0;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+#select-all-container {
+    padding: 5px 5px 15px 5px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+    cursor: pointer;
+}
+
+#fan-list {
+    overflow-y: auto;
+}
+
+#fan-list label {
+    display: block; /* 每个选项占一行 */
+    margin-bottom: 10px;
+    font-size: 0.95em;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+#fan-list label:hover {
+    background-color: #f0f0f0;
+}
+
+/* 右侧包含图表和说明的列 */
+#right-column {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0; /* 防止flex item溢出 */
+    height: calc(100vh - 120px); /* 视口高度减去header和padding */
+}
+
+/* 右侧图表区域的样式 */
+#chart-container {
+    flex: 1 1 auto; /* 占据剩余空间，允许伸缩 */
+    min-height: 400px; /* 增加最小高度确保图表完整显示 */
+    max-height: calc(100vh - 320px); /* 确保不会超出视口，为描述区域留出空间 */
+    display: flex; /* 让子元素可以伸缩 */
+    overflow: hidden; /* 防止内容溢出 */
+}
+
+#chart {
+    width: 100%;
+    height: 100%;
+    min-width: 0; /* 防止flex item溢出 */
+    min-height: 400px; /* 确保图表有足够高度 */
+}
+
+/* 说明区域样式 */
+#description-container {
+    flex: 0 0 auto; /* 固定大小，不伸缩 */
+    height: 180px; /* 固定高度而不是最大高度 */
+    line-height: 1.6;
+    color: #555;
+    font-size: 0.9em;
+    overflow-y: auto;
+}
