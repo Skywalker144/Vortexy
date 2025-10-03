@@ -48,7 +48,7 @@ def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
         print(f"已处理风扇: {fan_name}，共 {len(points)} 个数据点。")
 
     # 将最终的字典写入JSON文件
-    
+
     # 使用 'w' 模式（写入），encoding='utf-8' 来支持中文字符
     with open(json_path, 'w', encoding='utf-8') as f:
         # json.dump() 用于将Python字典写入文件
@@ -63,5 +63,4 @@ def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
 if __name__ == '__main__':
     # 你只需要把这里的 'fans.xlsx' 换成你的实际文件名即可
     convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据.xlsx', json_path='27mm冷排换扇同噪声数据.json')
-    convert_fan_data_to_json(excel_path='厚单塔换扇同噪声数据.xlsx', json_path='厚单塔换扇同噪声数据.json')
     convert_fan_data_to_json(excel_path='单塔单扇换扇数据.xlsx', json_path='单塔单扇换扇数据.json')
