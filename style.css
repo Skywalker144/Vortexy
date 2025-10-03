@@ -220,47 +220,66 @@ h2 {
     }
 
     header {
-        padding: 8px 15px;
+        padding: 5px 15px;
     }
 
     h1 {
-        font-size: 1.1em;
+        font-size: 1em;
     }
 
     .container {
         flex-direction: row;
-        padding: 10px;
+        padding: 8px;
         gap: 10px;
-        height: calc(100vh - 50px);
+        height: calc(100vh - 40px);
     }
 
     #controls-panel {
         width: 35%;
         max-width: 280px;
         height: 100%;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #project-selector {
+        margin-bottom: 10px;
+        flex-shrink: 0;
     }
 
     #fan-selector {
         flex-grow: 1;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
     }
 
-    #fan-list {
-        overflow-y: auto;
-        max-height: none;
-    }
-
-    #fan-list label {
-        padding: 6px;
-        margin-bottom: 6px;
-        font-size: 0.9em;
+    #fan-selector h2 {
+        font-size: 0.95em;
+        padding-bottom: 5px;
+        margin-bottom: 8px;
+        flex-shrink: 0;
     }
 
     #select-all-container {
-        padding: 6px;
-        font-size: 0.9em;
-        margin-bottom: 8px;
+        padding: 4px 5px;
+        font-size: 0.85em;
+        margin-bottom: 6px;
+        flex-shrink: 0;
+    }
+
+    #fan-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        min-height: 0;
+    }
+
+    #fan-list label {
+        padding: 4px 5px;
+        margin-bottom: 4px;
+        font-size: 0.85em;
     }
 
     #right-column {
