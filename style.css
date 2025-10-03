@@ -142,3 +142,224 @@ h2 {
     font-size: 0.9em;
     overflow-y: auto;
 }
+
+/* 移动端响应式设计 */
+/* 平板设备和小屏幕 */
+@media screen and (max-width: 768px) {
+    header {
+        padding: 10px 15px;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+
+    .container {
+        flex-direction: column;
+        padding: 10px;
+        gap: 15px;
+    }
+
+    #controls-panel {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+    }
+
+    #fan-selector {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    #right-column {
+        height: auto;
+        min-height: 500px;
+    }
+
+    #chart-container {
+        min-height: 350px;
+        max-height: 450px;
+    }
+
+    #chart {
+        min-height: 350px;
+    }
+
+    #description-container {
+        height: auto;
+        min-height: 100px;
+        max-height: 200px;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+
+    #fan-list label {
+        padding: 8px;
+        margin-bottom: 8px;
+        font-size: 1em;
+    }
+
+    #select-all-container {
+        padding: 8px;
+        font-size: 1em;
+    }
+
+    #project-select {
+        padding: 10px;
+        font-size: 1em;
+    }
+}
+
+/* 手机横屏优化 */
+@media screen and (max-width: 950px) and (orientation: landscape) {
+    body {
+        overflow-x: hidden;
+    }
+
+    header {
+        padding: 8px 15px;
+    }
+
+    h1 {
+        font-size: 1.1em;
+    }
+
+    .container {
+        flex-direction: row;
+        padding: 10px;
+        gap: 10px;
+        height: calc(100vh - 50px);
+    }
+
+    #controls-panel {
+        width: 35%;
+        max-width: 280px;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    #fan-selector {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    #fan-list {
+        overflow-y: auto;
+        max-height: none;
+    }
+
+    #fan-list label {
+        padding: 6px;
+        margin-bottom: 6px;
+        font-size: 0.9em;
+    }
+
+    #select-all-container {
+        padding: 6px;
+        font-size: 0.9em;
+        margin-bottom: 8px;
+    }
+
+    #right-column {
+        flex-grow: 1;
+        height: 100%;
+        gap: 10px;
+        overflow: hidden;
+    }
+
+    #chart-container {
+        flex: 1 1 auto;
+        min-height: 250px;
+        max-height: calc(100% - 150px);
+    }
+
+    #chart {
+        min-height: 250px;
+    }
+
+    #description-container {
+        flex: 0 0 auto;
+        height: 120px;
+        font-size: 0.85em;
+    }
+
+    .panel {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1em;
+        padding-bottom: 6px;
+    }
+
+    #project-select {
+        padding: 6px;
+        font-size: 0.9em;
+    }
+}
+
+/* 手机竖屏优化 */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    header {
+        padding: 8px 10px;
+    }
+
+    h1 {
+        font-size: 1.1em;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
+
+    .container {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    #controls-panel {
+        width: 100%;
+    }
+
+    #fan-selector {
+        max-height: 250px;
+    }
+
+    #chart-container {
+        min-height: 300px;
+        max-height: 400px;
+    }
+
+    #chart {
+        min-height: 300px;
+    }
+
+    #description-container {
+        height: auto;
+        max-height: 180px;
+    }
+
+    .panel {
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    #fan-list label {
+        padding: 10px;
+        margin-bottom: 6px;
+        font-size: 0.95em;
+    }
+
+    #select-all-container {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    #project-select {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+}
