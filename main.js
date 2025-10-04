@@ -50,16 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         xAxis: {
             name: '噪声 (dBA)',
             type: 'value',
-
-            min: function (value) {
-                const span = value.max - value.min;
-                return value.min - span * 0.1;
-            },
-
-            max: function (value) {
-                const span = value.max - value.min;
-                return value.max + span * 0.1;
-            },
+            scale: true,
             nameLocation: 'middle',
             nameGap: 25
         },
@@ -67,15 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         yAxis: {
             name: '温度 (℃)',
             type: 'value',
-            min: function (value) {
-                const span = value.max - value.min;
-                return value.min - span * 0.1;
-            },
-
-            max: function (value) {
-                const span = value.max - value.min;
-                return value.max + span * 0.1;
-            },
+            scale: true,
             nameLocation: 'middle',
             nameGap: 45,
             axisLabel: {
@@ -219,6 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 smooth: true,
                 symbol: 'circle',
                 symbolSize: 6,
+                clip: false,
                 data: swappedData
             };
         });

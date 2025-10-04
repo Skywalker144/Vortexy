@@ -64,3 +64,4 @@ if __name__ == '__main__':
     # 你只需要把这里的 'fans.xlsx' 换成你的实际文件名即可
     convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据.xlsx', json_path='27mm冷排换扇同噪声数据.json')
     convert_fan_data_to_json(excel_path='单塔单扇换扇数据.xlsx', json_path='单塔单扇换扇数据.json')
+    convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据-前八250W.xlsx', json_path='27mm冷排换扇同噪声数据-前八250W.json')
