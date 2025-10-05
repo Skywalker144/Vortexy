@@ -1,24 +1,24 @@
 [
     {
-        "name": "单塔单扇换扇同噪声性能",
+        "name": "AK700单扇换扇同噪声性能-200W",
         "dataFile": "单塔单扇换扇数据.json",
-        "title": "AK700换扇同噪声下的温度-噪声曲线",
+        "title": "AK700单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
         "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>说明:</strong> 曲线左端可以延伸，只是我没再往低调速 测数据了</li>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> AK700</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4BA，距离塔体侧面40cm处测量</li>\n</ul>"
     },
     {
-        "name": "27mm冷排-250W",
+        "name": "27mm冷排单扇换扇同噪声性能-250W",
         "dataFile": "27mm冷排换扇同噪声数据-前八250W.json",
-        "title": "27mm冷排换扇同噪声下的温度-噪声曲线",
+        "title": "27mm冷排单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
         "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 250W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> 超频三巨浪120 (27mm标准厚度)</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
     },
     {
-        "name": "27mm冷排",
+        "name": "27mm冷排单扇换扇同噪声性能-200W",
         "dataFile": "27mm冷排换扇同噪声数据.json",
-        "title": "27mm冷排换扇同噪声下的温度-噪声曲线",
+        "title": "27mm冷排单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
         "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> 超频三巨浪120 (27mm标准厚度)</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声37.2dBA，距离风扇33cm处测量</li>\n</ul>"
