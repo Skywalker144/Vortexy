@@ -8,7 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const myChart = echarts.init(chartDom);
 
+    // 定义更多的颜色，避免颜色重复
+    const colors = [
+        '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+        '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#d14a61',
+        '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+        '#6e7074', '#546570', '#c4ccd3', '#e59696', '#b6d7a8',
+        '#ffd966', '#a4c2f4', '#d5a6bd', '#9fc5e8', '#ead1dc',
+        '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3'
+    ];
+
     const option = {
+        color: colors,
         title: {
             text: '', // Title will be set dynamically
             left: 'center'
@@ -190,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedFans.push(checkbox.value);
         });
 
-        const newSeries = selectedFans.map(fanName => {
+        const newSeries = selectedFans.map((fanName, index) => {
 
             const originalData = allFanData[fanName];
 
@@ -203,7 +214,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 symbol: 'circle',
                 symbolSize: 6,
                 clip: false,
-                data: swappedData
+                data: swappedData,
+                itemStyle: {
+                    color: colors[index % colors.length]
+                },
+                lineStyle: {
+                    color: colors[index % colors.length]
+                }
             };
         });
 
