@@ -26,14 +26,27 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         tooltip: {
             trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            },
             formatter: function (params) {
-                if (!params.length) return;
-                const yAxisName = myChart.getOption().yAxis[0].name;
-                const yAxisUnit = yAxisName.includes('℃') ? '℃' : (yAxisName.includes('%') ? '%' : '');
-                let result = '噪声: ' + params[0].axisValueLabel + ' dBA<br/>';
+                if (!params || params.length === 0) return;
+                
+                // 获取所有选中点的噪声值（应该都是相同的）
+                const noise = params[0].value[0];
+                let result = '噪声: ' + noise + ' dBA<br/>';
+                
+                // 为每个数据点添加温度和转速信息
                 params.forEach(function (item) {
-                    result += item.marker + ' ' + item.seriesName + ' : ' + item.value[1] + ' ' + yAxisUnit + '<br/>';
+                    const temp = item.value[1];
+                    const speed = item.value[2];
+                    result += item.marker + ' ' + item.seriesName + ' : ' + temp + ' ℃';
+                    if (speed !== undefined) {
+                        result += ' (转速: ' + speed + ' RPM)';
+                    }
+                    result += '<br/>';
                 });
+                
                 return result;
             }
         },
@@ -202,10 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const newSeries = selectedFans.map((fanName, index) => {
-
             const originalData = allFanData[fanName];
-
-            const swappedData = originalData.map(point => [point[1], point[0]]);
 
             return {
                 name: fanName,
@@ -214,12 +224,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 symbol: 'circle',
                 symbolSize: 6,
                 clip: false,
-                data: swappedData,
+                data: originalData,
                 itemStyle: {
                     color: colors[index % colors.length]
                 },
                 lineStyle: {
                     color: colors[index % colors.length]
+                },
+                emphasis: {           // 添加hover效果
+                    focus: 'series',  // 高亮当前系列
+                    scale: 1.5        // 放大数据点
                 }
             };
         });

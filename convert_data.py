@@ -16,7 +16,7 @@ def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
         json_path (str): 输出的JSON文件路径。
     """
     try:
-        # 使用pd.read_excel()读取Excel文件，第一行作为列标题
+        # 读取Excel文件，不使用合并的单元格作为列名
         df = pd.read_excel(excel_path, header=0)
         print("成功读取Excel文件。")
     except FileNotFoundError:
@@ -24,36 +24,39 @@ def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
         return
 
     all_fans_data = {}
-
-    # df.columns 会得到所有列的标题列表。我们每次处理两列，所以步长为2。
-    for i in range(0, len(df.columns), 2):
-        # 第i列的标题就是风扇的型号
-        fan_name = df.columns[i]
-
-        # 获取当前风扇对应的“噪声”和“风量”两列的列名
-        noise_col_name = df.columns[i]
-        airflow_col_name = df.columns[i + 1]
-
-        # 提取这两列数据，并使用 .dropna() 删除所有包含空值的行
-        # 这样就可以处理每个风扇数据点数量不同的情况
-        fan_df = df[[noise_col_name, airflow_col_name]].dropna()
-
-        # 为了方便绘图，我们通常将数据整理成 [x, y] 的形式。
-        # 在这里，x轴是“风量”，y轴是“噪声”。
-        # .values 将DataFrame转换为Numpy数组，.tolist() 将其转换为列表
-        points = fan_df[[airflow_col_name, noise_col_name]].values.tolist()
-
-        # 将处理好的数据存入字典
+    
+    # 获取所有非空的列名（这些是实际的风扇型号）
+    fan_names = [col for col in df.columns if not col.startswith('Unnamed:')]
+    
+    for i, fan_name in enumerate(fan_names):
+        # 计算每个风扇数据的起始列索引
+        start_col = df.columns.get_loc(fan_name)
+        
+        # 检查后续列是否为Unnamed，以确定这个风扇的数据列数
+        next_col_index = start_col + 1
+        col_count = 1
+        while (next_col_index < len(df.columns) and 
+               df.columns[next_col_index].startswith('Unnamed:')):
+            col_count += 1
+            next_col_index += 1
+            
+        # 获取该风扇的所有相关列
+        cols = df.columns[start_col:start_col + col_count]
+        
+        # 提取数据
+        fan_df = df[cols].dropna()
+        
+        if col_count == 3:  # 三列格式：[噪声, 温度, 转速]
+            points = [[row[0], row[1], row[2]] for row in fan_df.values.tolist()]
+            print(f"处理三列数据风扇: {fan_name}，包含转速数据")
+        else:  # 两列格式：[噪声, 温度]
+            points = [[row[0], row[1]] for row in fan_df.values.tolist()]
+            print(f"处理两列数据风扇: {fan_name}")
+            
         all_fans_data[fan_name] = points
         print(f"已处理风扇: {fan_name}，共 {len(points)} 个数据点。")
 
-    # 将最终的字典写入JSON文件
-
-    # 使用 'w' 模式（写入），encoding='utf-8' 来支持中文字符
     with open(json_path, 'w', encoding='utf-8') as f:
-        # json.dump() 用于将Python字典写入文件
-        # ensure_ascii=False 确保中文字符能正常显示
-        # indent=4 让JSON文件格式化，更易于阅读
         json.dump(all_fans_data, f, ensure_ascii=False, indent=4)
 
     print(f"\n处理完成！所有数据已成功保存到 '{json_path}' 文件中。")
