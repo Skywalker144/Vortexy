@@ -8,6 +8,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const myChart = echarts.init(chartDom);
 
+    // 检测是否为移动设备
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    // 获取响应式配置
+    function getResponsiveConfig() {
+        const mobile = isMobile();
+        return {
+            grid: {
+                right: mobile ? '15%' : '25%',
+                left: mobile ? '15%' : '10%',
+                bottom: mobile ? '15%' : '10%',
+                top: mobile ? '15%' : '10%'
+            },
+            xAxis: {
+                nameLocation: 'middle',
+                nameGap: mobile ? 35 : 25,
+                nameTextStyle: {
+                    fontSize: mobile ? 12 : 14,
+                    fontWeight: 'bold'
+                },
+                axisLabel: {
+                    fontSize: mobile ? 10 : 12
+                }
+            },
+            yAxis: {
+                nameLocation: 'middle',
+                nameGap: mobile ? 50 : 45,
+                nameTextStyle: {
+                    fontSize: mobile ? 12 : 14,
+                    fontWeight: 'bold'
+                },
+                axisLabel: {
+                    fontSize: mobile ? 10 : 12,
+                    formatter: function (value) {
+                        return value.toFixed(2);
+                    }
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                right: mobile ? '2%' : '2%',
+                top: 'center',
+                width: mobile ? '12%' : '20%',
+                textStyle: {
+                    fontSize: mobile ? 9 : 11
+                },
+                type: 'scroll',
+                pageIconSize: mobile ? 10 : 12,
+                pageTextStyle: {
+                    fontSize: mobile ? 8 : 10
+                }
+            },
+            title: {
+                textStyle: {
+                    fontSize: mobile ? 14 : 18
+                }
+            }
+        };
+    }
+
     // 定义更多的颜色，避免颜色重复
     const colors = [
         '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
@@ -115,11 +177,25 @@ document.addEventListener('DOMContentLoaded', function() {
         descriptionContainer.innerHTML = '';
         myChart.setOption({ series: [] });
 
-        // Update chart title and axes
+        // 获取响应式配置
+        const responsiveConfig = getResponsiveConfig();
+        
+        // Update chart title and axes with responsive config
         myChart.setOption({
-            title: { text: project.title },
-            xAxis: { name: project.xAxisName },
-            yAxis: { name: project.yAxisName }
+            title: { 
+                text: project.title,
+                ...responsiveConfig.title
+            },
+            xAxis: { 
+                name: project.xAxisName,
+                ...responsiveConfig.xAxis
+            },
+            yAxis: { 
+                name: project.yAxisName,
+                ...responsiveConfig.yAxis
+            },
+            grid: responsiveConfig.grid,
+            legend: responsiveConfig.legend
         });
 
         // Update description
@@ -251,5 +327,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('resize', function() {
         myChart.resize();
+        
+        // 在窗口大小改变时更新响应式配置
+        if (currentProject) {
+            const responsiveConfig = getResponsiveConfig();
+            myChart.setOption({
+                title: responsiveConfig.title,
+                xAxis: responsiveConfig.xAxis,
+                yAxis: responsiveConfig.yAxis,
+                grid: responsiveConfig.grid,
+                legend: responsiveConfig.legend
+            });
+        }
     });
 });
