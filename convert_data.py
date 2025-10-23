@@ -68,3 +68,4 @@ if __name__ == '__main__':
     convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据.xlsx', json_path='27mm冷排换扇同噪声数据.json')
     convert_fan_data_to_json(excel_path='单塔单扇换扇数据.xlsx', json_path='单塔单扇换扇数据.json')
     convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据-前八250W.xlsx', json_path='27mm冷排换扇同噪声数据-前八250W.json')
+    convert_fan_data_to_json(excel_path='双塔单扇双扇三扇夹汉堡对比.xlsx', json_path='双塔单扇双扇三扇夹汉堡对比.json')
