@@ -32,14 +32,6 @@
         "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>风扇:</strong> F9R120</li>\n    <li><strong>散热器:</strong> AK620G2</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.8dBA，距离塔体侧面40cm处测量</li>\n</ul>"
     },
     {
-        "name": "RZ700单扇双扇同噪声数据",
-        "dataFile": "RZ700单扇双扇同噪声数据.json",
-        "title": "RZ700单扇双扇同噪声数据温度-噪声曲线",
-        "xAxisName": "噪声 (dBA)",
-        "yAxisName": "温度 (℃)",
-        "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> RZ700</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.8dBA，距离塔体侧面40cm处测量</li>\n</ul>"
-    },
-    {
         "name": "挑战者SE单扇双扇数据",
         "dataFile": "挑战者SE单扇双扇数据.json",
         "title": "挑战者SE单扇双扇温度-噪声曲线",
