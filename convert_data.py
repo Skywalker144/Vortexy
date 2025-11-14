@@ -73,3 +73,5 @@ if __name__ == '__main__':
     convert_fan_data_to_json(excel_path='挑战者SE单扇双扇数据.xlsx', json_path='挑战者SE单扇双扇数据.json')
     convert_fan_data_to_json(excel_path='Hyper612APEX单扇双扇数据.xlsx', json_path='Hyper612APEX单扇双扇数据.json')
     convert_fan_data_to_json(excel_path='AK700单扇双扇数据.xlsx', json_path='AK700单扇双扇数据.json')
+    convert_fan_data_to_json(excel_path='水冷换扇_A120.xlsx', json_path='水冷换扇_A120.json')
+    convert_fan_data_to_json(excel_path='AK400G2单扇双扇.xlsx', json_path='AK400G2单扇双扇.json')
