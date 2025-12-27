@@ -76,8 +76,8 @@
         "dataFile": "AK400G2单扇双扇.json",
         "title": "AK400G2单扇双扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
-        "yAxisName": "温度 (℃)",
-        "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> AK400G2</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
+        "yAxisName": "温升 (℃)",
+        "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> AK400G2</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
     },
     {
         "name": "水冷换扇三测-200W",
@@ -86,5 +86,14 @@
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
         "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>环境温度:</strong> 26℃</li>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> 超频三巨浪120 (27mm标准厚度)</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
+    },
+    {
+        "name": "双塔双扇不同布局-200W",
+        "dataFile": "双塔双扇不同布局.json",
+        "title": "AK620G2+双莫比乌斯不同布局同噪声下的温度-噪声曲线",
+        "xAxisName": "噪声 (dBA)",
+        "yAxisName": "温升 (℃)",
+        "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> AK620G2</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
     }
+
 ]
