@@ -231,11 +231,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // 从URL hash加载项目
-    function loadProjectFromHash() {
-        const hash = window.location.hash;
-        if (hash && hash.startsWith('#/')) {
-            const projectName = decodeURIComponent(hash.substring(2));
+    // 从URL路径加载项目
+    function loadProjectFromPath() {
+        const path = window.location.pathname;
+        if (path && path !== '/') {
+            // 移除开头的斜杠
+            const projectName = decodeURIComponent(path.substring(1));
             const project = projects.find(p => p.name === projectName);
             if (project) {
                 projectSelectDom.value = project.name;
@@ -246,9 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     }
 
-    // 更新URL hash
-    function updateHash(projectName) {
-        window.location.hash = '#/' + encodeURIComponent(projectName);
+    // 更新URL路径
+    function updatePath(projectName) {
+        const newPath = '/' + encodeURIComponent(projectName);
+        window.history.pushState({ project: projectName }, '', newPath);
     }
 
     fetch('projects.json')
@@ -267,19 +269,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     const selectedProjectName = e.target.value;
                     const selectedProject = projects.find(p => p.name === selectedProjectName);
                     if (selectedProject) {
-                        updateHash(selectedProjectName);
+                        updatePath(selectedProjectName);
                         loadProjectData(selectedProject);
                     }
                 });
 
-                // 监听hash变化
-                window.addEventListener('hashchange', () => {
-                    loadProjectFromHash();
+                // 监听浏览器前进/后退按钮
+                window.addEventListener('popstate', () => {
+                    loadProjectFromPath();
                 });
 
                 // 页面加载时尝试从URL加载项目，如果没有则加载第一个
-                if (!loadProjectFromHash()) {
-                    updateHash(projects[0].name);
+                if (!loadProjectFromPath()) {
+                    updatePath(projects[0].name);
                     loadProjectData(projects[0]);
                 }
             } else {
