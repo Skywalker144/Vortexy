@@ -71,7 +71,7 @@ if __name__ == '__main__':
     convert_fan_data_to_json('27mm冷排换扇-前八250W')
     convert_fan_data_to_json('27mm冷排换扇')
     convert_fan_data_to_json('AK700换扇')
-    convert_fan_data_to_json('双塔单扇双扇三扇夹汉堡对比')
+    convert_fan_data_to_json('双塔单扇双扇三扇')
     convert_fan_data_to_json('RZ700D换扇')
     convert_fan_data_to_json('挑战者SE单扇双扇')
     convert_fan_data_to_json('Hyper612APEX单扇双扇')
