@@ -2,19 +2,22 @@ import pandas as pd
 import json
 
 
-def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
+def convert_fan_data_to_json(filename):
     """
     读取特定格式的Excel文件，并将其转换为用于图表展示的JSON文件。
 
     Excel格式假定:
     - 第一行是风扇型号。
-    - 每个风扇型号占据两列，第一列是“噪声”，第二列是“风量”。
+    - 每个风扇型号占据两列，第一列是"噪声"，第二列是"风量"。
     - 不同风扇的数据点（行数）可以不同。
 
     Args:
-        excel_path (str): 输入的Excel文件路径。
-        json_path (str): 输出的JSON文件路径。
+        filename (str): 文件名（不包含路径和后缀）。
     """
+    # 自动补全路径和后缀
+    excel_path = f'xlsx/{filename}.xlsx'
+    json_path = f'json/{filename}.json'
+    
     try:
         # 读取Excel文件，不使用合并的单元格作为列名
         df = pd.read_excel(excel_path, header=0)
@@ -47,10 +50,10 @@ def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
         fan_df = df[cols].dropna()
         
         if col_count == 3:  # 三列格式：[噪声, 温度, 转速]
-            points = [[row[0], row[1], row[2]] for row in fan_df.values.tolist()]
+            points = [[round(row[0], 2), round(row[1], 2), round(row[2], 2)] for row in fan_df.values.tolist()]
             print(f"处理三列数据风扇: {fan_name}，包含转速数据")
         else:  # 两列格式：[噪声, 温度]
-            points = [[row[0], row[1]] for row in fan_df.values.tolist()]
+            points = [[round(row[0], 2), round(row[1], 2)] for row in fan_df.values.tolist()]
             print(f"处理两列数据风扇: {fan_name}")
             
         all_fans_data[fan_name] = points
@@ -64,19 +67,19 @@ def convert_fan_data_to_json(excel_path='fans.xlsx', json_path='fan_data.json'):
 
 # --- 使用方法 ---
 if __name__ == '__main__':
-    # 你只需要把这里的 'fans.xlsx' 换成你的实际文件名即可
-    convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据.xlsx', json_path='27mm冷排换扇同噪声数据.json')
-    convert_fan_data_to_json(excel_path='单塔单扇换扇数据.xlsx', json_path='单塔单扇换扇数据.json')
-    convert_fan_data_to_json(excel_path='27mm冷排换扇同噪声数据-前八250W.xlsx', json_path='27mm冷排换扇同噪声数据-前八250W.json')
-    convert_fan_data_to_json(excel_path='双塔单扇双扇三扇夹汉堡对比.xlsx', json_path='双塔单扇双扇三扇夹汉堡对比.json')
-    convert_fan_data_to_json(excel_path='RZ700单扇双扇同噪声数据.xlsx', json_path='RZ700单扇双扇同噪声数据.json')
-    convert_fan_data_to_json(excel_path='挑战者SE单扇双扇数据.xlsx', json_path='挑战者SE单扇双扇数据.json')
-    convert_fan_data_to_json(excel_path='Hyper612APEX单扇双扇数据.xlsx', json_path='Hyper612APEX单扇双扇数据.json')
-    convert_fan_data_to_json(excel_path='AK700单扇双扇数据.xlsx', json_path='AK700单扇双扇数据.json')
-    convert_fan_data_to_json(excel_path='水冷换扇_A120.xlsx', json_path='水冷换扇_A120.json')
-    convert_fan_data_to_json(excel_path='AK400G2单扇双扇.xlsx', json_path='AK400G2单扇双扇.json')
-    convert_fan_data_to_json(excel_path='水冷换扇三测.xlsx', json_path='水冷换扇三测.json')
-    convert_fan_data_to_json(excel_path='双塔双扇不同布局.xlsx', json_path='双塔双扇不同布局.json')
-    convert_fan_data_to_json(excel_path='RT600换扇.xlsx', json_path='RT600换扇.json')
-    convert_fan_data_to_json(excel_path='AK700单扇双扇.xlsx', json_path='AK700单扇双扇.json')
-    convert_fan_data_to_json(excel_path='双塔不同策略.xlsx', json_path='双塔不同策略.json')
+    # 现在只需要传入文件名（不含路径和后缀）
+    convert_fan_data_to_json('27mm冷排换扇同噪声数据')
+    convert_fan_data_to_json('单塔单扇换扇数据')
+    convert_fan_data_to_json('27mm冷排换扇同噪声数据-前八250W')
+    convert_fan_data_to_json('双塔单扇双扇三扇夹汉堡对比')
+    convert_fan_data_to_json('RZ700单扇双扇同噪声数据')
+    convert_fan_data_to_json('挑战者SE单扇双扇数据')
+    convert_fan_data_to_json('Hyper612APEX单扇双扇数据')
+    convert_fan_data_to_json('AK700单扇双扇数据')
+    convert_fan_data_to_json('水冷换扇_A120')
+    convert_fan_data_to_json('AK400G2单扇双扇')
+    convert_fan_data_to_json('水冷换扇三测')
+    convert_fan_data_to_json('双塔双扇不同布局')
+    convert_fan_data_to_json('RT600换扇')
+    convert_fan_data_to_json('AK700单扇双扇')
+    convert_fan_data_to_json('双塔不同策略')

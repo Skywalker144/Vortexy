@@ -1,7 +1,7 @@
 [
     {
         "name": "AK700单扇换扇同噪声性能-200W",
-        "dataFile": "单塔单扇换扇数据.json",
+        "dataFile": "json/单塔单扇换扇数据.json",
         "title": "AK700单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -9,7 +9,7 @@
     },
     {
         "name": "27mm冷排单扇换扇同噪声性能-250W",
-        "dataFile": "27mm冷排换扇同噪声数据-前八250W.json",
+        "dataFile": "json/27mm冷排换扇同噪声数据-前八250W.json",
         "title": "27mm冷排单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -17,7 +17,7 @@
     },
     {
         "name": "27mm冷排单扇换扇同噪声性能-200W",
-        "dataFile": "27mm冷排换扇同噪声数据.json",
+        "dataFile": "json/27mm冷排换扇同噪声数据.json",
         "title": "27mm冷排单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -25,7 +25,7 @@
     },
     {
         "name": "双塔单扇双扇三扇夹汉堡对比",
-        "dataFile": "双塔单扇双扇三扇夹汉堡对比.json",
+        "dataFile": "json/双塔单扇双扇三扇夹汉堡对比.json",
         "title": "双塔单扇双扇三扇夹汉堡对比的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -33,7 +33,7 @@
     },
     {
         "name": "RZ700单扇双扇同噪声数据",
-        "dataFile": "RZ700单扇双扇同噪声数据.json",
+        "dataFile": "json/RZ700单扇双扇同噪声数据.json",
         "title": "RZ700单扇双扇同噪声数据温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -41,7 +41,7 @@
     },
     {
         "name": "挑战者SE单扇双扇数据",
-        "dataFile": "挑战者SE单扇双扇数据.json",
+        "dataFile": "json/挑战者SE单扇双扇数据.json",
         "title": "挑战者SE单扇双扇温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -49,7 +49,7 @@
     },
     {
         "name": "Hyper612APEX单扇双扇数据",
-        "dataFile": "Hyper612APEX单扇双扇数据.json",
+        "dataFile": "json/Hyper612APEX单扇双扇数据.json",
         "title": "Hyper612APEX单扇双扇温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -57,7 +57,7 @@
     },
     {
         "name": "AK700单扇双扇数据",
-        "dataFile": "AK700单扇双扇数据.json",
+        "dataFile": "json/AK700单扇双扇数据.json",
         "title": "AK700单扇双扇温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -65,7 +65,7 @@
     },
     {
         "name": "27mm冷排单扇换扇同噪声性能二测-200W",
-        "dataFile": "水冷换扇_A120.json",
+        "dataFile": "json/水冷换扇_A120.json",
         "title": "27mm冷排单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -73,7 +73,7 @@
     },
     {
         "name": "AK400G2单扇双扇-200W",
-        "dataFile": "AK400G2单扇双扇.json",
+        "dataFile": "json/AK400G2单扇双扇.json",
         "title": "AK400G2单扇双扇同噪声下的温升-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温升 (℃)",
@@ -81,7 +81,7 @@
     },
     {
         "name": "水冷换扇三测-200W",
-        "dataFile": "水冷换扇三测.json",
+        "dataFile": "json/水冷换扇三测.json",
         "title": "27mm冷排单扇换扇同噪声下的温度-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温度 (℃)",
@@ -89,7 +89,7 @@
     },
     {
         "name": "双塔双扇不同布局-200W",
-        "dataFile": "双塔双扇不同布局.json",
+        "dataFile": "json/双塔双扇不同布局.json",
         "title": "AK620G2+双莫比乌斯不同布局同噪声下的温升-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温升 (℃)",
@@ -97,7 +97,7 @@
     },
     {
         "name": "RT600换扇-200W",
-        "dataFile": "RT600换扇.json",
+        "dataFile": "json/RT600换扇.json",
         "title": "RT600换扇同噪声下的温升-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温升 (℃)",
@@ -105,7 +105,7 @@
     },
     {
         "name": "AK700单扇双扇-200W",
-        "dataFile": "AK700单扇双扇.json",
+        "dataFile": "json/AK700单扇双扇.json",
         "title": "AK700单扇双扇同噪声下的温升-噪声曲线",
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温升 (℃)",
