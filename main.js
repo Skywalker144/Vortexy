@@ -70,15 +70,38 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // 定义更多的颜色，避免颜色重复
-    const colors = [
+    // 预定义的基础颜色池（去除重复）
+    const baseColors = [
         '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
         '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#d14a61',
-        '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
         '#6e7074', '#546570', '#c4ccd3', '#e59696', '#b6d7a8',
         '#ffd966', '#a4c2f4', '#d5a6bd', '#9fc5e8', '#ead1dc',
-        '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3'
+        '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3',
+        '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6ab04c',
+        '#badc58', '#f0932b', '#eb4d4b', '#c44569', '#574b90',
+        '#f8b500', '#00d2d3', '#1e3799', '#b71540', '#079992',
+        '#38ada9', '#78e08f', '#fa983a', '#e55039', '#4a69bd',
+        '#60a3bc', '#e58e26', '#f53b57', '#3c40c6', '#0fbcf9',
+        '#ffa801', '#05c46b', '#ffd32a', '#ff3f34', '#00d8d6'
     ];
+
+    // 动态生成颜色的函数（当基础颜色不够时使用）
+    function generateColor(index) {
+        if (index < baseColors.length) {
+            return baseColors[index];
+        }
+        
+        // 使用HSL颜色空间生成不重复的颜色
+        // 通过改变色相(Hue)来生成不同颜色
+        const hue = (index * 137.508) % 360; // 使用黄金角度分布
+        const saturation = 65 + (index % 3) * 10; // 65-85%
+        const lightness = 50 + (index % 4) * 5; // 50-65%
+        
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    // 生成足够多的颜色（支持最多100个不同的颜色）
+    const colors = Array.from({ length: 100 }, (_, i) => generateColor(i));
 
     const option = {
         color: colors,
@@ -347,9 +370,13 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
 
+        // 获取响应式配置
+        const responsiveConfig = getResponsiveConfig();
+
         myChart.setOption({
             legend: {
-                data: selectedFans
+                data: selectedFans,
+                ...responsiveConfig.legend
             },
             series: newSeries
         }, {
