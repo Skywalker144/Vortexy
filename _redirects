@@ -1,0 +1,3 @@
+# Cloudflare Pages 重定向规则
+# 确保所有请求都返回 index.html（用于单页应用）
+/*    /index.html   200
