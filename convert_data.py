@@ -78,3 +78,5 @@ if __name__ == '__main__':
     convert_fan_data_to_json(excel_path='水冷换扇三测.xlsx', json_path='水冷换扇三测.json')
     convert_fan_data_to_json(excel_path='双塔双扇不同布局.xlsx', json_path='双塔双扇不同布局.json')
     convert_fan_data_to_json(excel_path='RT600换扇.xlsx', json_path='RT600换扇.json')
+    convert_fan_data_to_json(excel_path='AK700单扇双扇.xlsx', json_path='AK700单扇双扇.json')
+    convert_fan_data_to_json(excel_path='双塔不同策略.xlsx', json_path='双塔不同策略.json')

@@ -102,6 +102,14 @@
         "xAxisName": "噪声 (dBA)",
         "yAxisName": "温升 (℃)",
         "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> RT600</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
+    },
+    {
+        "name": "AK700单扇双扇-200W",
+        "dataFile": "AK700单扇双扇.json",
+        "title": "AK700单扇双扇同噪声下的温升-噪声曲线",
+        "xAxisName": "噪声 (dBA)",
+        "yAxisName": "温升 (℃)",
+        "description": "<strong>测试环境与条件:</strong>\n<ul>\n    <li><strong>测试平台:</strong> Intel Core Ultra 7 265K</li>\n    <li><strong>CPU设定功耗:</strong> 200W (使用AIDA64 FPU烤机)</li>\n    <li><strong>散热器:</strong> AK700</li>\n    <li><strong>噪声测试方法:</strong> 背景噪声36.4dBA，距离风扇中心40cm处测量</li>\n</ul>"
     }
 
 ]
