@@ -231,6 +231,26 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // 从URL hash加载项目
+    function loadProjectFromHash() {
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#/')) {
+            const projectName = decodeURIComponent(hash.substring(2));
+            const project = projects.find(p => p.name === projectName);
+            if (project) {
+                projectSelectDom.value = project.name;
+                loadProjectData(project);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 更新URL hash
+    function updateHash(projectName) {
+        window.location.hash = '#/' + encodeURIComponent(projectName);
+    }
+
     fetch('projects.json')
         .then(response => response.json())
         .then(data => {
@@ -242,15 +262,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     option.textContent = proj.name;
                     projectSelectDom.appendChild(option);
                 });
+                
                 projectSelectDom.addEventListener('change', (e) => {
                     const selectedProjectName = e.target.value;
                     const selectedProject = projects.find(p => p.name === selectedProjectName);
                     if (selectedProject) {
+                        updateHash(selectedProjectName);
                         loadProjectData(selectedProject);
                     }
                 });
-                // Load the first project by default
-                loadProjectData(projects[0]);
+
+                // 监听hash变化
+                window.addEventListener('hashchange', () => {
+                    loadProjectFromHash();
+                });
+
+                // 页面加载时尝试从URL加载项目，如果没有则加载第一个
+                if (!loadProjectFromHash()) {
+                    updateHash(projects[0].name);
+                    loadProjectData(projects[0]);
+                }
             } else {
                  fanListDom.innerHTML = "<p style='color: red;'>未找到任何项目，请检查projects.json文件。</p>";
             }
