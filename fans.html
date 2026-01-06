@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风扇数据库</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="fans.css">
+</head>
+<body>
+    <!-- 水印 -->
+    <div class="watermark"></div>
+
+    <header>
+        <h1>🌪️ 风扇数据库</h1>
+        <nav class="page-nav">
+            <a href="index.html" class="nav-link">← 返回性能比较</a>
+        </nav>
+    </header>
+
+    <main class="container fans-container">
+        <!-- 筛选和控制面板 -->
+        <div class="controls-section panel">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <h3>筛选条件</h3>
+                    <div class="filter-options">
+                        <!-- 厚度筛选 -->
+                        <div class="filter-item">
+                            <label class="filter-label">厚度 (mm):</label>
+                            <div id="thickness-filters" class="checkbox-group">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <!-- 轴承类型筛选 -->
+                        <div class="filter-item">
+                            <label class="filter-label">轴承类型:</label>
+                            <div id="bearing-filters" class="checkbox-group">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <!-- 尺寸筛选 -->
+                        <div class="filter-item">
+                            <label class="filter-label">尺寸 (mm):</label>
+                            <div id="size-filters" class="checkbox-group">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <!-- 品牌筛选 -->
+                        <div class="filter-item">
+                            <label class="filter-label">品牌:</label>
+                            <div id="brand-filters" class="checkbox-group">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-sort-group">
+                    <!-- 搜索框 -->
+                    <div class="search-box">
+                        <label class="filter-label">搜索:</label>
+                        <input type="text" id="search-input" placeholder="输入风扇型号...">
+                    </div>
+
+                    <!-- 排序选项 -->
+                    <div class="sort-box">
+                        <label class="filter-label">排序:</label>
+                        <select id="sort-select">
+                            <option value="name-asc">型号 A-Z</option>
+                            <option value="name-desc">型号 Z-A</option>
+                            <option value="thickness-asc">厚度 ↑</option>
+                            <option value="thickness-desc">厚度 ↓</option>
+                            <option value="size-asc">尺寸 ↑</option>
+                            <option value="size-desc">尺寸 ↓</option>
+                            <option value="brand-asc">品牌 A-Z</option>
+                            <option value="brand-desc">品牌 Z-A</option>
+                        </select>
+                    </div>
+
+                    <!-- 重置按钮 -->
+                    <button id="reset-filters" class="btn-reset">重置筛选</button>
+                </div>
+            </div>
+
+            <!-- 结果统计 -->
+            <div class="results-info">
+                显示 <strong id="result-count">0</strong> 个风扇
+            </div>
+        </div>
+
+        <!-- 风扇卡片网格 -->
+        <div id="fans-grid" class="fans-grid">
+            <!-- 动态生成风扇卡片 -->
+        </div>
+
+        <!-- 无结果提示 -->
+        <div id="no-results" class="no-results" style="display: none;">
+            <p>😔 没有找到符合条件的风扇</p>
+        </div>
+    </main>
+
+    <!-- 详情模态框 -->
+    <div id="fan-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 id="modal-title"></h2>
+            <div id="modal-body" class="modal-body">
+                <!-- 动态填充详细信息 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="fans.js"></script>
+</body>
+</html>
