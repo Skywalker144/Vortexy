@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: 'center',
                 width: mobile ? '12%' : '20%',
                 textStyle: {
-                    fontSize: mobile ? 9 : 11
+                    fontSize: mobile ? 11 : 14
                 },
                 type: 'scroll',
-                pageIconSize: mobile ? 10 : 12,
+                pageIconSize: mobile ? 12 : 14,
                 pageTextStyle: {
-                    fontSize: mobile ? 8 : 10
+                    fontSize: mobile ? 10 : 12
                 }
             },
             title: {
@@ -143,12 +143,12 @@ document.addEventListener('DOMContentLoaded', function() {
             top: 'center',
             width: '20%',
             textStyle: {
-                fontSize: 11
+                fontSize: 14
             },
             type: 'scroll',
-            pageIconSize: 12,
+            pageIconSize: 14,
             pageTextStyle: {
-                fontSize: 10
+                fontSize: 12
             }
         },
 
