@@ -45,6 +45,28 @@ header {
     text-align: center;
 }
 
+/* 页面导航样式 */
+.page-nav {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.nav-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    background: rgba(74, 144, 226, 0.1);
+    color: #357abd;
+}
+
 h1, h2 {
     margin: 0;
     font-size: 1.5em;

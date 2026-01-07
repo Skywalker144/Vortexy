@@ -1,0 +1,26 @@
+{
+  "fans": [
+    {
+      "name": "F9 R120",
+      "thickness": 30,
+      "bearing": "双滚珠轴承",
+      "size": 120,
+      "brand": "超频三",
+      "price": "～150",
+      "description": "111"
+    },
+    {
+      "name": "LP12E",
+      "thickness": 25,
+      "bearing": "双滚珠轴承",
+      "size": 120,
+      "brand": "攀威",
+      "price": "89",
+      "description": "111"
+    }
+  ],
+  "metadata": {
+    "total": 2,
+    "lastUpdated": "2026-01-05 18:18:50"
+  }
+}

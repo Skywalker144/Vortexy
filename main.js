@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: 'center',
                 width: mobile ? '12%' : '20%',
                 textStyle: {
-                    fontSize: mobile ? 9 : 11
+                    fontSize: mobile ? 11 : 14
                 },
                 type: 'scroll',
-                pageIconSize: mobile ? 10 : 12,
+                pageIconSize: mobile ? 12 : 14,
                 pageTextStyle: {
-                    fontSize: mobile ? 8 : 10
+                    fontSize: mobile ? 10 : 12
                 }
             },
             title: {
@@ -143,17 +143,18 @@ document.addEventListener('DOMContentLoaded', function() {
             top: 'center',
             width: '20%',
             textStyle: {
-                fontSize: 11
+                fontSize: 14
             },
             type: 'scroll',
-            pageIconSize: 12,
+            pageIconSize: 14,
             pageTextStyle: {
-                fontSize: 10
+                fontSize: 12
             }
         },
 
         grid: {
-            right: '25%'
+            right: '25%',
+            containLabel: false
         },
 
         xAxis: {
@@ -178,7 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
         },
 
         dataZoom: [
-            { type: 'inside' },
+            {
+                type: 'inside',
+                filterMode: 'none'  // 不过滤数据，确保所有点都参与连线
+            },
 //            { type: 'slider' }
         ],
 
@@ -352,10 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 name: fanName,
                 type: 'line',
-                smooth: true,
+                smooth: false,  // 改为false以避免平滑曲线在边界处的问题
                 symbol: 'circle',
                 symbolSize: 6,
                 clip: false,
+                connectNulls: true,  // 连接空值点
                 data: originalData,
                 itemStyle: {
                     color: colors[index % colors.length]
@@ -365,7 +370,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 emphasis: {           // 添加hover效果
                     focus: 'series',  // 高亮当前系列
+                    blurScope: 'coordinateSystem',  // 只在同一坐标系内模糊
                     scale: 1.5        // 放大数据点
+                },
+                blur: {               // 自定义模糊效果
+                    lineStyle: {
+                        opacity: 0.2  // 未高亮曲线的透明度（0.3比默认的0.05更清晰）
+                    },
+                    itemStyle: {
+                        opacity: 0.2  // 未高亮数据点的透明度
+                    }
                 }
             };
         });
