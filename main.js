@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const fanListDom = document.getElementById('fan-list');
     const projectSelectDom = document.getElementById('project-select');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
-    const descriptionContainer = document.getElementById('description-container');
 
     const myChart = echarts.init(chartDom);
 
@@ -201,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
         allFanData = {};
         fanListDom.innerHTML = '';
         selectAllCheckbox.checked = false;
-        descriptionContainer.innerHTML = '';
         myChart.setOption({ series: [] });
 
         // 获取响应式配置
@@ -224,11 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
             grid: responsiveConfig.grid,
             legend: responsiveConfig.legend
         });
-
-        // Update description
-        if (project.description) {
-            descriptionContainer.innerHTML = project.description;
-        }
 
         fetch(project.dataFile)
             .then(response => response.json())
@@ -356,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 name: fanName,
                 type: 'line',
-                smooth: false,  // 改为false以避免平滑曲线在边界处的问题
+                smooth: 0.3,
                 symbol: 'circle',
                 symbolSize: 6,
                 clip: false,
