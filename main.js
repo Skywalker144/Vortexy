@@ -153,7 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
         },
 
         grid: {
-            right: '25%'
+            right: '25%',
+            containLabel: false
         },
 
         xAxis: {
@@ -178,7 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
         },
 
         dataZoom: [
-            { type: 'inside' },
+            {
+                type: 'inside',
+                filterMode: 'none'  // 不过滤数据，确保所有点都参与连线
+            },
 //            { type: 'slider' }
         ],
 
@@ -352,21 +356,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 name: fanName,
                 type: 'line',
-                smooth: true,
+                smooth: false,  // 改为false以避免平滑曲线在边界处的问题
                 symbol: 'circle',
                 symbolSize: 6,
                 clip: false,
+                connectNulls: true,  // 连接空值点
                 data: originalData,
                 itemStyle: {
                     color: colors[index % colors.length]
                 },
                 lineStyle: {
-                    color: colors[index % colors.length],
-                    clip: false  // 防止线条在缩放时被裁剪
+                    color: colors[index % colors.length]
                 },
                 emphasis: {           // 添加hover效果
                     focus: 'series',  // 高亮当前系列
+                    blurScope: 'coordinateSystem',  // 只在同一坐标系内模糊
                     scale: 1.5        // 放大数据点
+                },
+                blur: {               // 自定义模糊效果
+                    lineStyle: {
+                        opacity: 0.2  // 未高亮曲线的透明度（0.3比默认的0.05更清晰）
+                    },
+                    itemStyle: {
+                        opacity: 0.2  // 未高亮数据点的透明度
+                    }
                 }
             };
         });
