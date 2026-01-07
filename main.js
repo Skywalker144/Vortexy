@@ -361,7 +361,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     color: colors[index % colors.length]
                 },
                 lineStyle: {
-                    color: colors[index % colors.length]
+                    color: colors[index % colors.length],
+                    clip: false  // 防止线条在缩放时被裁剪
                 },
                 emphasis: {           // 添加hover效果
                     focus: 'series',  // 高亮当前系列
