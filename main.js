@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const mobile = isMobile();
         return {
             grid: {
-                right: mobile ? '15%' : '25%',
+                right: mobile ? '15%' : '12%',
                 left: mobile ? '15%' : '10%',
                 bottom: mobile ? '15%' : '10%',
                 top: mobile ? '15%' : '10%'
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
 
         grid: {
-            right: '25%',
+            right: '12%',
             containLabel: false
         },
 
@@ -235,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     checkbox.type = 'checkbox';
                     checkbox.value = name;
+                    checkbox.checked = true; // 默认选中所有风扇
                     checkbox.addEventListener('change', () => {
                         updateSelectAllState();
                         updateChart();
@@ -244,6 +245,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     label.appendChild(document.createTextNode(' ' + name));
                     fanListDom.appendChild(label);
                 });
+
+                // 更新全选复选框状态
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+
+                // 自动更新图表显示所有图线
+                updateChart();
             })
             .catch(error => {
                 console.error(`加载 ${project.dataFile} 文件失败:`, error);
