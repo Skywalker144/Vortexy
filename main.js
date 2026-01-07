@@ -4,8 +4,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const fanListDom = document.getElementById('fan-list');
     const projectSelectDom = document.getElementById('project-select');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    const fanSearchInput = document.getElementById('fan-search');
+    const clearSearchBtn = document.getElementById('clear-search');
 
     const myChart = echarts.init(chartDom);
+
+    // 收藏功能
+    let favorites = JSON.parse(localStorage.getItem('fanFavorites') || '[]');
 
     // 检测是否为移动设备
     function isMobile() {
@@ -17,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const mobile = isMobile();
         return {
             grid: {
-                right: mobile ? '15%' : '12%',
+                right: mobile ? '5%' : '12%',
                 left: mobile ? '15%' : '10%',
-                bottom: mobile ? '15%' : '10%',
+                bottom: mobile ? '25%' : '10%',
                 top: mobile ? '15%' : '10%'
             },
             xAxis: {
@@ -48,18 +53,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             legend: {
-                orient: 'vertical',
-                right: mobile ? '2%' : '2%',
-                top: 'center',
-                width: mobile ? '12%' : '20%',
-                textStyle: {
-                    fontSize: mobile ? 11 : 14
-                },
+                orient: mobile ? 'horizontal' : 'vertical',
+                [mobile ? 'bottom' : 'right']: mobile ? '0%' : '2%',
+                [mobile ? 'left' : 'top']: mobile ? 'center' : 'center',
+                width: mobile ? '90%' : '20%',
                 type: 'scroll',
-                pageIconSize: mobile ? 12 : 14,
+                pageIconSize: mobile ? 10 : 14,
                 pageTextStyle: {
-                    fontSize: mobile ? 10 : 12
-                }
+                    fontSize: mobile ? 9 : 12
+                },
+                textStyle: {
+                    fontSize: mobile ? 10 : 14
+                },
+                // 添加选择器
+                selector: [
+                    {
+                        type: 'all',
+                        title: '全选'
+                    },
+                    {
+                        type: 'inverse',
+                        title: '反选'
+                    }
+                ]
             },
             title: {
                 textStyle: {
@@ -111,27 +127,58 @@ document.addEventListener('DOMContentLoaded', function() {
         tooltip: {
             trigger: 'axis',
             axisPointer: {
-                type: 'cross'
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
             },
+            confine: true, // 限制在图表区域内
             formatter: function (params) {
-                if (!params || params.length === 0) return;
+                if (!params || params.length === 0) return '';
                 
-                // 获取所有选中点的噪声值（应该都是相同的）
                 const noise = params[0].value[0];
-                let result = '噪声: ' + noise + ' dBA<br/>';
+                let result = `<div style="padding: 5px;">`;
+                result += `<strong style="font-size: 14px;">噪声: ${noise} dBA</strong><br/>`;
+                result += `<div style="margin-top: 8px; max-height: 300px; overflow-y: auto;">`;
                 
-                // 为每个数据点添加温度和转速信息
-                params.forEach(function (item) {
+                // 按温度排序
+                const sortedParams = [...params].sort((a, b) => a.value[1] - b.value[1]);
+                
+                sortedParams.forEach((item, index) => {
                     const temp = item.value[1];
                     const speed = item.value[2];
-                    result += item.marker + ' ' + item.seriesName + ' : ' + temp + ' ℃';
-                    if (speed !== undefined) {
-                        result += ' (转速: ' + speed + ' RPM)';
+                    
+                    // 排名标记
+                    let rankBadge = '';
+                    if (index === 0) {
+                        rankBadge = '<span style="color: #27ae60; font-weight: bold;">🥇</span> ';
+                    } else if (index === 1) {
+                        rankBadge = '<span style="color: #95a5a6; font-weight: bold;">🥈</span> ';
+                    } else if (index === 2) {
+                        rankBadge = '<span style="color: #cd7f32; font-weight: bold;">🥉</span> ';
+                    } else {
+                        rankBadge = `<span style="color: #999;">#${index + 1}</span> `;
                     }
-                    result += '<br/>';
+                    
+                    result += `<div style="margin: 4px 0; padding: 4px; border-left: 3px solid ${item.color}; padding-left: 8px;">`;
+                    result += rankBadge;
+                    result += `${item.marker} <strong>${item.seriesName}</strong><br/>`;
+                    result += `<span style="margin-left: 20px;">温度: <strong>${temp}℃</strong></span>`;
+                    
+                    if (speed !== undefined) {
+                        result += `<br/><span style="margin-left: 20px; color: #666;">转速: ${speed} RPM</span>`;
+                    }
+                    result += `</div>`;
                 });
                 
+                result += `</div></div>`;
                 return result;
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#ccc',
+            borderWidth: 1,
+            textStyle: {
+                color: '#333'
             }
         },
 
@@ -202,20 +249,28 @@ document.addEventListener('DOMContentLoaded', function() {
         selectAllCheckbox.checked = false;
         myChart.setOption({ series: [] });
 
+        // 更新header中的项目描述
+        const descriptionDom = document.getElementById('project-description');
+        if (descriptionDom && project.description) {
+            descriptionDom.innerHTML = project.description;
+        } else if (descriptionDom) {
+            descriptionDom.innerHTML = '';
+        }
+
         // 获取响应式配置
         const responsiveConfig = getResponsiveConfig();
         
         // Update chart title and axes with responsive config
         myChart.setOption({
-            title: { 
+            title: {
                 text: project.title,
                 ...responsiveConfig.title
             },
-            xAxis: { 
+            xAxis: {
                 name: project.xAxisName,
                 ...responsiveConfig.xAxis
             },
-            yAxis: { 
+            yAxis: {
                 name: project.yAxisName,
                 ...responsiveConfig.yAxis
             },
@@ -249,6 +304,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 更新全选复选框状态
                 selectAllCheckbox.checked = true;
                 selectAllCheckbox.indeterminate = false;
+
+                // 添加收藏按钮
+                updateFavoriteButtons();
+                updateFavoritesList();
 
                 // 自动更新图表显示所有图线
                 updateChart();
@@ -415,4 +474,154 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    // 搜索功能
+    fanSearchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const fanLabels = fanListDom.querySelectorAll('label');
+        
+        // 显示/隐藏清除按钮
+        clearSearchBtn.style.display = searchTerm ? 'block' : 'none';
+        
+        fanLabels.forEach(label => {
+            const fanName = label.textContent.toLowerCase();
+            const matches = fanName.includes(searchTerm);
+            
+            if (matches) {
+                label.classList.remove('fan-item-hidden');
+                // 高亮匹配项
+                if (searchTerm) {
+                    label.classList.add('fan-item-highlight');
+                } else {
+                    label.classList.remove('fan-item-highlight');
+                }
+            } else {
+                label.classList.add('fan-item-hidden');
+                label.classList.remove('fan-item-highlight');
+            }
+        });
+    });
+
+    // 清除搜索
+    clearSearchBtn.addEventListener('click', function() {
+        fanSearchInput.value = '';
+        fanSearchInput.dispatchEvent(new Event('input'));
+        fanSearchInput.focus();
+    });
+
+    // 收藏功能函数
+    function updateFavoritesList() {
+        const favList = document.getElementById('favorites-list');
+        const showFavBtn = document.getElementById('show-favorites-only');
+        
+        if (favorites.length === 0) {
+            favList.innerHTML = '<span style="color: #999;">暂无收藏，点击风扇名称旁的☆收藏常用风扇</span>';
+            showFavBtn.style.display = 'none';
+            return;
+        }
+        
+        // 显示"只显示收藏"按钮
+        showFavBtn.style.display = 'block';
+        
+        favList.innerHTML = favorites.map(fan => `
+            <span class="favorite-item" data-fan="${fan}" title="点击快速选中此风扇">
+                ${fan}
+                <span class="remove-fav" onclick="event.stopPropagation(); removeFavorite('${fan}')" title="取消收藏">✕</span>
+            </span>
+        `).join('');
+        
+        // 点击收藏项快速选择
+        favList.querySelectorAll('.favorite-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-fav')) return;
+                const fanName = this.dataset.fan;
+                
+                // 先取消所有选择
+                const allCheckboxes = fanListDom.querySelectorAll('input[type="checkbox"]');
+                allCheckboxes.forEach(cb => cb.checked = false);
+                
+                // 只选中点击的收藏项
+                const checkbox = Array.from(allCheckboxes).find(cb => cb.value === fanName);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    updateSelectAllState();
+                    updateChart();
+                    
+                    // 滚动到该风扇位置
+                    checkbox.parentElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        });
+    }
+
+    function toggleFavorite(fanName) {
+        const index = favorites.indexOf(fanName);
+        if (index > -1) {
+            favorites.splice(index, 1);
+        } else {
+            favorites.push(fanName);
+        }
+        localStorage.setItem('fanFavorites', JSON.stringify(favorites));
+        updateFavoritesList();
+        updateFavoriteButtons();
+    }
+
+    // 全局函数，供HTML onclick调用
+    window.removeFavorite = function(fanName) {
+        const index = favorites.indexOf(fanName);
+        if (index > -1) {
+            favorites.splice(index, 1);
+            localStorage.setItem('fanFavorites', JSON.stringify(favorites));
+            updateFavoritesList();
+            updateFavoriteButtons();
+        }
+    };
+
+    function updateFavoriteButtons() {
+        fanListDom.querySelectorAll('label').forEach(label => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            const fanName = checkbox.value;
+            let favBtn = label.querySelector('.favorite-btn');
+            
+            if (!favBtn) {
+                favBtn = document.createElement('span');
+                favBtn.className = 'favorite-btn';
+                favBtn.innerHTML = '☆';
+                favBtn.onclick = (e) => {
+                    e.preventDefault();
+                    toggleFavorite(fanName);
+                };
+                label.appendChild(favBtn);
+            }
+            
+            if (favorites.includes(fanName)) {
+                favBtn.innerHTML = '★';
+                favBtn.classList.add('active');
+            } else {
+                favBtn.innerHTML = '☆';
+                favBtn.classList.remove('active');
+            }
+        });
+    }
+
+    // "只显示收藏"按钮功能
+    document.getElementById('show-favorites-only').addEventListener('click', function() {
+        // 取消所有选择
+        const allCheckboxes = fanListDom.querySelectorAll('input[type="checkbox"]');
+        allCheckboxes.forEach(cb => cb.checked = false);
+        
+        // 只选中收藏的风扇
+        favorites.forEach(fanName => {
+            const checkbox = Array.from(allCheckboxes).find(cb => cb.value === fanName);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+        
+        updateSelectAllState();
+        updateChart();
+    });
+
+    // 页面加载时初始化收藏列表
+    updateFavoritesList();
 });

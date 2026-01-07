@@ -11,10 +11,14 @@
     <div class="watermark"></div>
 
     <header>
-        <h1>风扇性能比较工具</h1>
-        <nav class="page-nav">
-            <a href="fans.html" class="nav-link">查看风扇数据库 →</a>
-        </nav>
+        <div class="header-content">
+            <div class="header-left">
+                <h1>风扇性能比较工具</h1>
+                <nav class="page-nav">
+                    <a href="fans.html" class="nav-link">查看风扇数据库 →</a>
+                </nav>
+            </div>
+        </div>
     </header>
 
     <main class="container">
@@ -25,6 +29,21 @@
             </div>
             <div id="fan-selector">
                 <h2>选择风扇进行比较:</h2>
+                <!-- 收藏区域 -->
+                <div id="favorites-section" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 1em; color: #666;">⭐ 收藏的风扇</h3>
+                        <button id="show-favorites-only" style="padding: 4px 8px; font-size: 0.85em; background: #4a90e2; color: white; border: none; border-radius: 3px; cursor: pointer; display: none;">只显示收藏</button>
+                    </div>
+                    <div id="favorites-list" style="min-height: 30px; font-size: 0.9em; color: #999;">
+                        暂无收藏
+                    </div>
+                </div>
+                <!-- 搜索框 -->
+                <div class="search-container">
+                    <input type="text" id="fan-search" placeholder="🔍 搜索风扇..." />
+                    <button id="clear-search" style="display: none;">✕</button>
+                </div>
                 <div id="select-all-container">
                     <label>
                         <input type="checkbox" id="select-all-checkbox">

@@ -47,12 +47,69 @@ header {
     padding: 15px 30px;
     border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    position: relative;
+}
+
+.header-left {
+    flex: 0 0 auto;
     text-align: center;
+}
+
+.header-right {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 45%;
+    display: flex;
+    align-items: center;
+}
+
+.project-description {
+    font-size: 0.85em;
+    color: #666;
+    line-height: 1.5;
+    text-align: left;
+    max-height: 120px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #4a90e2;
+    word-wrap: break-word;
+    word-break: break-word;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.project-description:empty {
+    display: none;
+}
+
+.project-description ul {
+    margin: 5px 0;
+    padding-left: 20px;
+}
+
+.project-description li {
+    margin: 3px 0;
+}
+
+.project-description strong {
+    color: #333;
 }
 
 /* 页面导航样式 */
 .page-nav {
-    margin-top: 15px;
+    margin-top: 10px;
     text-align: center;
 }
 
@@ -160,6 +217,94 @@ h2 {
     background-color: #f0f0f0;
 }
 
+/* 搜索框样式 */
+.search-container {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+#fan-search {
+    width: 100%;
+    padding: 8px 30px 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95em;
+    transition: border-color 0.3s;
+}
+
+#fan-search:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+#clear-search {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 16px;
+}
+
+#clear-search:hover {
+    color: #333;
+}
+
+.fan-item-hidden {
+    display: none !important;
+}
+
+.fan-item-highlight {
+    background-color: #fff3cd;
+}
+
+/* 收藏功能样式 */
+.favorite-btn {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+.favorite-btn:hover {
+    color: #f39c12;
+}
+
+.favorite-btn.active {
+    color: #f39c12;
+}
+
+.favorite-item {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 2px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.favorite-item:hover {
+    background: #e8f4f8;
+    border-color: #4a90e2;
+}
+
+.favorite-item .remove-fav {
+    margin-left: 5px;
+    color: #999;
+}
+
+.favorite-item .remove-fav:hover {
+    color: #e74c3c;
+}
+
 /* 右侧包含图表和说明的列 */
 #right-column {
     flex-grow: 1;
@@ -200,6 +345,25 @@ h2 {
         padding: 10px 15px;
     }
 
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .header-left {
+        width: 100%;
+    }
+
+    .header-right {
+        width: 100%;
+    }
+
+    .project-description {
+        font-size: 0.8em;
+        max-height: 80px;
+        padding: 6px 10px;
+    }
+
     h1 {
         font-size: 1.2em;
     }
@@ -234,6 +398,7 @@ h2 {
 
     #chart {
         min-height: 350px;
+        padding-bottom: 80px; /* 为底部图例留出空间 */
     }
 
     #description-container {
@@ -271,6 +436,16 @@ h2 {
 
     header {
         padding: 5px 15px;
+    }
+
+    .header-content {
+        gap: 15px;
+    }
+
+    .project-description {
+        font-size: 0.75em;
+        max-height: 60px;
+        padding: 5px 8px;
     }
 
     h1 {
@@ -374,6 +549,17 @@ h2 {
 @media screen and (max-width: 480px) and (orientation: portrait) {
     header {
         padding: 8px 10px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .project-description {
+        font-size: 0.75em;
+        max-height: 70px;
+        padding: 5px 8px;
     }
 
     h1 {
