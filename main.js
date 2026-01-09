@@ -133,53 +133,25 @@ document.addEventListener('DOMContentLoaded', function() {
             left: 'center'
         },
         tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross',
-                label: {
-                    backgroundColor: '#6a7985'
-                }
-            },
+            trigger: 'item',
             confine: true, // 限制在图表区域内
             formatter: function (params) {
-                if (!params || params.length === 0) return '';
+                if (!params) return '';
                 
-                const noise = params[0].value[0];
+                const noise = params.value[0];
+                const temp = params.value[1];
+                const speed = params.value[2];
+                
                 let result = `<div style="padding: 5px;">`;
-                result += `<strong style="font-size: 14px;">噪声: ${noise} dBA</strong><br/>`;
-                result += `<div style="margin-top: 8px; max-height: 300px; overflow-y: auto;">`;
+                result += `<div style="margin-bottom: 4px;">${params.marker} <strong>${params.seriesName}</strong></div>`;
+                result += `<div style="margin: 4px 0;">噪声: <strong style="color: #3498db; font-size: 14px;">${noise} dBA</strong></div>`;
+                result += `<div style="margin: 4px 0;">温度: <strong style="color: #e74c3c; font-size: 14px;">${temp}℃</strong></div>`;
                 
-                // 按温度排序
-                const sortedParams = [...params].sort((a, b) => a.value[1] - b.value[1]);
+                if (speed !== undefined && speed !== null) {
+                    result += `<div style="margin: 4px 0;">转速: <strong style="color: #2ecc71; font-size: 14px;">${speed} RPM</strong></div>`;
+                }
                 
-                sortedParams.forEach((item, index) => {
-                    const temp = item.value[1];
-                    const speed = item.value[2];
-                    
-                    // 排名标记
-                    let rankBadge = '';
-                    if (index === 0) {
-                        rankBadge = '<span style="color: #27ae60; font-weight: bold;">🥇</span> ';
-                    } else if (index === 1) {
-                        rankBadge = '<span style="color: #95a5a6; font-weight: bold;">🥈</span> ';
-                    } else if (index === 2) {
-                        rankBadge = '<span style="color: #cd7f32; font-weight: bold;">🥉</span> ';
-                    } else {
-                        rankBadge = `<span style="color: #999;">#${index + 1}</span> `;
-                    }
-                    
-                    result += `<div style="margin: 4px 0; padding: 4px; border-left: 3px solid ${item.color}; padding-left: 8px;">`;
-                    result += rankBadge;
-                    result += `${item.marker} <strong>${item.seriesName}</strong><br/>`;
-                    result += `<span style="margin-left: 20px;">温度: <strong>${temp}℃</strong></span>`;
-                    
-                    if (speed !== undefined) {
-                        result += `<br/><span style="margin-left: 20px; color: #666;">转速: ${speed} RPM</span>`;
-                    }
-                    result += `</div>`;
-                });
-                
-                result += `</div></div>`;
+                result += `</div>`;
                 return result;
             },
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
