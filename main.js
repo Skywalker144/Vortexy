@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             grid: {
                 right: mobile ? '5%' : '12%',
                 left: mobile ? '15%' : '10%',
-                bottom: mobile ? '30%' : '10%',  // 增加移动端底部间距
+                bottom: mobile ? '35%' : '10%',  // 增加移动端底部间距，为图例留出更多空间
                 top: mobile ? '12%' : '10%'
             },
             xAxis: {
@@ -54,20 +54,21 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             legend: {
                 orient: mobile ? 'horizontal' : 'vertical',
-                [mobile ? 'bottom' : 'right']: mobile ? '2%' : '2%',  // 移动端图例位置稍微上移
+                [mobile ? 'bottom' : 'right']: mobile ? '1%' : '2%',  // 移动端图例距离底部更近
                 [mobile ? 'left' : 'top']: mobile ? 'center' : 'center',
-                width: mobile ? '95%' : '20%',  // 增加移动端图例宽度
+                width: mobile ? '96%' : '20%',  // 增加移动端图例宽度
                 type: 'scroll',
-                pageIconSize: mobile ? 12 : 14,  // 增大移动端翻页按钮
+                pageIconSize: mobile ? 14 : 14,  // 增大移动端翻页按钮
                 pageTextStyle: {
-                    fontSize: mobile ? 10 : 12
+                    fontSize: mobile ? 11 : 12
                 },
                 textStyle: {
-                    fontSize: mobile ? 11 : 14  // 稍微增大移动端字体
+                    fontSize: mobile ? 13 : 14,  // 增大移动端字体，从11增加到13
+                    overflow: 'truncate'  // 文字过长时截断
                 },
-                itemGap: mobile ? 8 : 10,  // 移动端图例项间距
-                itemWidth: mobile ? 20 : 25,  // 移动端图例图标宽度
-                itemHeight: mobile ? 12 : 14,  // 移动端图例图标高度
+                itemGap: mobile ? 10 : 10,  // 移动端图例项间距
+                itemWidth: mobile ? 22 : 25,  // 移动端图例图标宽度
+                itemHeight: mobile ? 14 : 14,  // 移动端图例图标高度
                 // 添加选择器
                 selector: [
                     {
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ],
                 selectorLabel: {
-                    fontSize: mobile ? 10 : 12
+                    fontSize: mobile ? 11 : 12
                 }
             },
             title: {
@@ -453,6 +454,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 legend: responsiveConfig.legend
             });
         }
+    });
+
+    // 监听屏幕方向变化（处理移动端横竖屏切换）
+    window.addEventListener('orientationchange', function() {
+        // 延迟执行以确保布局已更新
+        setTimeout(function() {
+            myChart.resize();
+            
+            // 更新响应式配置
+            if (currentProject) {
+                const responsiveConfig = getResponsiveConfig();
+                myChart.setOption({
+                    title: responsiveConfig.title,
+                    xAxis: responsiveConfig.xAxis,
+                    yAxis: responsiveConfig.yAxis,
+                    grid: responsiveConfig.grid,
+                    legend: responsiveConfig.legend
+                });
+            }
+        }, 300);
     });
 
     // 搜索功能

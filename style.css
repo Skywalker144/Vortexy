@@ -582,25 +582,29 @@ h2 {
 
     /* 减小风扇选择区域高度 */
     #fan-selector {
-        max-height: 30vh;
+        max-height: 35vh;
     }
 
-    /* 风扇列表改为3列网格布局 */
+    /* 风扇列表改为列表布局，每个风扇占一行 */
     #fan-list {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4px;
+        display: block;
         overflow-y: auto;
     }
 
     #fan-list label {
-        padding: 6px 2px;
-        margin-bottom: 0;
-        font-size: 0.75em;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: block;
+        padding: 8px 10px;
+        margin-bottom: 6px;
+        font-size: 0.9em;
+        text-align: left;
+        white-space: normal;
+        background: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #e0e0e0;
+    }
+
+    #fan-list label:active {
+        background: #e8f4f8;
     }
 
     /* 扩大图表区域 */
@@ -626,7 +630,7 @@ h2 {
 
     #select-all-container {
         padding: 6px 8px;
-        font-size: 0.85em;
+        font-size: 0.9em;
     }
 
     #project-select {
