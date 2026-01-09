@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
             grid: {
                 right: mobile ? '5%' : '12%',
                 left: mobile ? '15%' : '10%',
-                bottom: mobile ? '25%' : '10%',
-                top: mobile ? '15%' : '10%'
+                bottom: mobile ? '30%' : '10%',  // 增加移动端底部间距
+                top: mobile ? '12%' : '10%'
             },
             xAxis: {
                 nameLocation: 'middle',
@@ -54,17 +54,20 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             legend: {
                 orient: mobile ? 'horizontal' : 'vertical',
-                [mobile ? 'bottom' : 'right']: mobile ? '0%' : '2%',
+                [mobile ? 'bottom' : 'right']: mobile ? '2%' : '2%',  // 移动端图例位置稍微上移
                 [mobile ? 'left' : 'top']: mobile ? 'center' : 'center',
-                width: mobile ? '90%' : '20%',
+                width: mobile ? '95%' : '20%',  // 增加移动端图例宽度
                 type: 'scroll',
-                pageIconSize: mobile ? 10 : 14,
+                pageIconSize: mobile ? 12 : 14,  // 增大移动端翻页按钮
                 pageTextStyle: {
-                    fontSize: mobile ? 9 : 12
+                    fontSize: mobile ? 10 : 12
                 },
                 textStyle: {
-                    fontSize: mobile ? 10 : 14
+                    fontSize: mobile ? 11 : 14  // 稍微增大移动端字体
                 },
+                itemGap: mobile ? 8 : 10,  // 移动端图例项间距
+                itemWidth: mobile ? 20 : 25,  // 移动端图例图标宽度
+                itemHeight: mobile ? 12 : 14,  // 移动端图例图标高度
                 // 添加选择器
                 selector: [
                     {
@@ -75,7 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'inverse',
                         title: '反选'
                     }
-                ]
+                ],
+                selectorLabel: {
+                    fontSize: mobile ? 10 : 12
+                }
             },
             title: {
                 textStyle: {

@@ -399,8 +399,54 @@
         flex-direction: column;
     }
 
+    .filter-group h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    /* 移动端筛选项改为2列布局，节省空间 */
     .filter-options {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .filter-item {
+        gap: 6px;
+    }
+
+    .filter-label {
+        font-size: 13px;
+    }
+
+    .checkbox-group {
+        gap: 4px;
+    }
+
+    .checkbox-group label {
+        font-size: 13px;
+    }
+
+    /* 搜索和排序区域优化 */
+    .search-sort-group {
+        gap: 10px;
+        min-width: auto;
+    }
+
+    #search-input,
+    #sort-select {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .btn-reset {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .results-info {
+        margin-top: 10px;
+        padding-top: 10px;
+        font-size: 13px;
     }
 
     .fans-grid {
