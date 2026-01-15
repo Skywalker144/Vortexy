@@ -79,4 +79,4 @@ if __name__ == '__main__':
     convert_fan_data_to_json('AK400G2换扇')
     convert_fan_data_to_json('双塔双扇不同布局')
     convert_fan_data_to_json('RT600换扇')
-    convert_fan_data_to_json('双塔不同策略')
+    convert_fan_data_to_json('AK700换扇重制版')
