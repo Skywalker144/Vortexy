@@ -326,6 +326,7 @@
         let currentProject = '';
         let selectedFans = new Set();
         let chart = null;
+        let highlightedFans = new Set(); // 当前被点击高亮的风扇（支持多选）
 
         // ========== 自定义排序配置 ==========
         // 项目排序：按照数组顺序显示，不在数组中的项目会排在最后
@@ -437,7 +438,7 @@
                 return;
             }
 
-            const fans = Object.keys(allData[currentProject]).sort();
+            const fans = Object.keys(allData[currentProject]); // 保持Excel原始顺序
             container.innerHTML = '';
 
             fans.forEach((fan, index) => {
@@ -470,12 +471,18 @@
                 // 鼠标悬停高亮效果
                 item.addEventListener('mouseenter', () => {
                     item.classList.add('highlight');
-                    highlightFanInChart(fan);
+                    if (highlightedFans.size === 0) {
+                        // 只有在没有固定高亮时才响应悬停
+                        highlightFanInChart(fan);
+                    }
                 });
 
                 item.addEventListener('mouseleave', () => {
                     item.classList.remove('highlight');
-                    resetChartHighlight();
+                    if (highlightedFans.size === 0) {
+                        // 只有在没有固定高亮时才重置
+                        resetChartHighlight();
+                    }
                 });
 
                 container.appendChild(item);
@@ -529,16 +536,39 @@
                                 boxWidth: 9,
                                 boxHeight: 9
                             },
+                            onClick: function(e, legendItem, legend) {
+                                // 自定义点击行为：切换高亮状态（支持多选）
+                                const fanName = legendItem.text;
+                                if (highlightedFans.has(fanName)) {
+                                    // 如果再次点击已高亮的风扇，取消该风扇的高亮
+                                    highlightedFans.delete(fanName);
+                                    if (highlightedFans.size === 0) {
+                                        resetChartHighlight();
+                                    } else {
+                                        applyHighlight();
+                                    }
+                                } else {
+                                    // 点击新的风扇，添加到高亮集合
+                                    highlightedFans.add(fanName);
+                                    applyHighlight();
+                                }
+                            },
                             onHover: function(e, legendItem, legend) {
-                                if (legendItem) {
+                                if (legendItem && highlightedFans.size === 0) {
+                                    // 只有在没有固定高亮时才响应悬停
                                     const fanName = legendItem.text;
                                     highlightFanInChart(fanName);
                                     // 改变鼠标样式
                                     e.native.target.style.cursor = 'pointer';
+                                } else {
+                                    e.native.target.style.cursor = 'pointer';
                                 }
                             },
                             onLeave: function(e, legendItem, legend) {
-                                resetChartHighlight();
+                                if (highlightedFans.size === 0) {
+                                    // 只有在没有固定高亮时才重置
+                                    resetChartHighlight();
+                                }
                                 e.native.target.style.cursor = 'default';
                             }
                         },
@@ -614,11 +644,11 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // 高亮指定风扇的曲线，其他曲线变透明
+        // 高亮指定风扇的曲线，其他曲线变透明（用于悬停预览）
         function highlightFanInChart(fanName) {
             if (!chart || !chart.data.datasets.length) return;
 
-            const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}) : []; // 保持Excel原始顺序
 
             // 检查目标风扇是否在图表中
             const targetDataset = chart.data.datasets.find(ds => ds.label === fanName);
@@ -637,10 +667,10 @@
                     dataset.borderWidth = 2;
                     dataset.pointRadius = 3;
                 } else {
-                    // 其他曲线：变透明（30%透明度）
-                    const fadedColor = hexToRgba(originalColor, 0.3);
+                    // 其他曲线：变透明（10%透明度）
+                    const fadedColor = hexToRgba(originalColor, 0.1);
                     dataset.borderColor = fadedColor;
-                    dataset.backgroundColor = hexToRgba(originalColor, 0.12);
+                    dataset.backgroundColor = hexToRgba(originalColor, 0.05);
                     dataset.pointBackgroundColor = fadedColor;
                     dataset.pointBorderColor = fadedColor;
                     dataset.borderWidth = 2;
@@ -655,7 +685,55 @@
                             point.options.backgroundColor = originalColor;
                             point.options.borderColor = originalColor;
                         } else {
-                            const fadedColor = hexToRgba(originalColor, 0.3);
+                            const fadedColor = hexToRgba(originalColor, 0.1);
+                            point.options.backgroundColor = fadedColor;
+                            point.options.borderColor = fadedColor;
+                        }
+                    });
+                }
+            });
+
+            chart.update('none'); // 快速更新，不带动画
+        }
+
+        // 应用多选高亮效果
+        function applyHighlight() {
+            if (!chart || !chart.data.datasets.length) return;
+
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}) : []; // 保持Excel原始顺序
+
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const fanIndex = fans.indexOf(dataset.label);
+                const originalColor = colorPalette[fanIndex % colorPalette.length];
+
+                if (highlightedFans.has(dataset.label)) {
+                    // 高亮的曲线：保持原样
+                    dataset.borderColor = originalColor;
+                    dataset.backgroundColor = originalColor + '40';
+                    dataset.pointBackgroundColor = originalColor;
+                    dataset.pointBorderColor = originalColor;
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 3;
+                } else {
+                    // 其他曲线：变透明（10%透明度）
+                    const fadedColor = hexToRgba(originalColor, 0.1);
+                    dataset.borderColor = fadedColor;
+                    dataset.backgroundColor = hexToRgba(originalColor, 0.05);
+                    dataset.pointBackgroundColor = fadedColor;
+                    dataset.pointBorderColor = fadedColor;
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 3;
+                }
+                
+                // 直接更新已渲染的点元素样式
+                const meta = chart.getDatasetMeta(datasetIndex);
+                if (meta && meta.data) {
+                    meta.data.forEach(point => {
+                        if (highlightedFans.has(dataset.label)) {
+                            point.options.backgroundColor = originalColor;
+                            point.options.borderColor = originalColor;
+                        } else {
+                            const fadedColor = hexToRgba(originalColor, 0.1);
                             point.options.backgroundColor = fadedColor;
                             point.options.borderColor = fadedColor;
                         }
@@ -670,7 +748,7 @@
         function resetChartHighlight() {
             if (!chart) return;
             
-            const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}) : []; // 保持Excel原始顺序
             
             chart.data.datasets.forEach((dataset, datasetIndex) => {
                 const fanIndex = fans.indexOf(dataset.label);
@@ -706,7 +784,7 @@
             projectTitle.textContent = currentProject || '请选择项目';
 
             const datasets = [];
-            const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}) : []; // 保持Excel原始顺序
 
             fans.forEach((fan, index) => {
                 if (!selectedFans.has(fan)) return;
