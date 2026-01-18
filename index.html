@@ -26,12 +26,64 @@
 
         /* 左侧边栏 */
         .sidebar {
-            width: 280px;
+            width: 220px;
             background: #f5f5f5;
             border-right: 1px solid #e0e0e0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: width 0.3s ease, margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            margin-left: -1px;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .sidebar-header,
+        .sidebar.collapsed .fan-list-container {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* 收起/展开按钮 */
+        .toggle-sidebar-btn {
+            position: fixed;
+            left: 220px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 32px;
+            background: #6495ed;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: left 0.3s ease, background 0.3s ease;
+            box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-sidebar-btn:hover {
+            background: #5a85d7;
+        }
+
+        .toggle-sidebar-btn.collapsed {
+            left: 0;
+        }
+
+        .toggle-sidebar-btn svg {
+            width: 12px;
+            height: 12px;
+            fill: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-sidebar-btn.collapsed svg {
+            transform: rotate(180deg);
         }
 
         .sidebar-header {
@@ -287,8 +339,14 @@
 </head>
 <body>
     <div class="container">
+        <!-- 收起/展开按钮 -->
+        <button id="toggleSidebar" class="toggle-sidebar-btn" title="收起侧边栏">
+            <svg viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+        </button>
         <!-- 左侧边栏 -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2>📊 项目选择</h2>
                 <select id="projectSelect" class="project-select">
@@ -785,12 +843,22 @@
 
             const datasets = [];
             const fans = currentProject ? Object.keys(allData[currentProject] || {}) : []; // 保持Excel原始顺序
+            
+            // 收集所有选中风扇的噪声值和温度值，用于计算坐标轴范围
+            let allNoiseValues = [];
+            let allTempValues = [];
 
             fans.forEach((fan, index) => {
                 if (!selectedFans.has(fan)) return;
 
                 const color = colorPalette[index % colorPalette.length];
                 const fanData = allData[currentProject][fan];
+                
+                // 收集噪声值和温度值
+                fanData.forEach(point => {
+                    allNoiseValues.push(point.noise);
+                    allTempValues.push(point.temp);
+                });
 
                 datasets.push({
                     label: fan,
@@ -812,12 +880,57 @@
                 });
             });
 
+            // 自适应调整x轴范围
+            if (allNoiseValues.length > 0) {
+                const minNoise = Math.min(...allNoiseValues);
+                const maxNoise = Math.max(...allNoiseValues);
+                // 设置x轴最小值为数据最小值减去1 dBA的边距，向下取整到整数
+                const xMin = Math.floor(minNoise - 1);
+                // 设置x轴最大值为数据最大值加上1 dBA的边距，向上取整到整数
+                const xMax = Math.ceil(maxNoise + 1);
+                chart.options.scales.x.min = xMin;
+                chart.options.scales.x.max = xMax;
+            } else {
+                // 没有数据时重置为自动
+                chart.options.scales.x.min = undefined;
+                chart.options.scales.x.max = undefined;
+            }
+
+            // 自适应调整y轴范围
+            if (allTempValues.length > 0) {
+                const minTemp = Math.min(...allTempValues);
+                const maxTemp = Math.max(...allTempValues);
+                // 设置y轴最小值为数据最小值减去1°C的边距，向下取整到整数
+                const yMin = Math.floor(minTemp - 0.7);
+                // 设置y轴最大值为数据最大值加上1°C的边距，向上取整到整数
+                const yMax = Math.ceil(maxTemp + 0.7);
+                chart.options.scales.y.min = yMin;
+                chart.options.scales.y.max = yMax;
+            } else {
+                // 没有数据时重置为自动
+                chart.options.scales.y.min = undefined;
+                chart.options.scales.y.max = undefined;
+            }
+
             chart.data.datasets = datasets;
             chart.update();
         }
 
+        // 侧边栏收起/展开功能
+        function initSidebarToggle() {
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const sidebar = document.getElementById('sidebar');
+            
+            toggleBtn.addEventListener('click', () => {
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                toggleBtn.classList.toggle('collapsed', isCollapsed);
+                toggleBtn.title = isCollapsed ? '展开侧边栏' : '收起侧边栏';
+            });
+        }
+
         // 启动应用
         init();
+        initSidebarToggle();
     </script>
 </body>
 </html>
