@@ -120,6 +120,13 @@
             border-color: #ccc;
         }
 
+        .fan-item.highlight {
+            background: #fff3cd;
+            border-color: #ffc107;
+            box-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
+            transform: scale(1.02);
+        }
+
         .fan-item.selected {
             background: #e8f0ff;
             border-color: #6495ed;
@@ -129,8 +136,39 @@
             width: 18px;
             height: 18px;
             margin-right: 12px;
-            accent-color: #6495ed;
             cursor: pointer;
+            /* 隐藏原生checkbox */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            /* 自定义样式 */
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            position: relative;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .fan-checkbox:hover {
+            border-color: #6495ed;
+        }
+
+        .fan-checkbox:checked {
+            background: #6495ed;
+            border-color: #6495ed;
+        }
+
+        .fan-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 5px;
+            height: 10px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
         }
 
         .fan-color {
@@ -432,6 +470,17 @@
                     updateChart();
                 });
 
+                // 鼠标悬停高亮效果
+                item.addEventListener('mouseenter', () => {
+                    item.classList.add('highlight');
+                    highlightFanInChart(fan);
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    item.classList.remove('highlight');
+                    resetChartHighlight();
+                });
+
                 container.appendChild(item);
             });
         }
@@ -480,6 +529,18 @@
                                 },
                                 usePointStyle: true,
                                 pointStyle: 'circle'
+                            },
+                            onHover: function(e, legendItem, legend) {
+                                if (legendItem) {
+                                    const fanName = legendItem.text;
+                                    highlightFanInChart(fanName);
+                                    // 改变鼠标样式
+                                    e.native.target.style.cursor = 'pointer';
+                                }
+                            },
+                            onLeave: function(e, legendItem, legend) {
+                                resetChartHighlight();
+                                e.native.target.style.cursor = 'default';
                             }
                         },
                         tooltip: {
@@ -544,6 +605,97 @@
                     }
                 }
             });
+        }
+
+        // 将十六进制颜色转换为rgba格式
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // 高亮指定风扇的曲线，其他曲线变透明
+        function highlightFanInChart(fanName) {
+            if (!chart || !chart.data.datasets.length) return;
+
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
+
+            // 检查目标风扇是否在图表中
+            const targetDataset = chart.data.datasets.find(ds => ds.label === fanName);
+            if (!targetDataset) return; // 如果风扇未被勾选显示，则不执行高亮
+
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const fanIndex = fans.indexOf(dataset.label);
+                const originalColor = colorPalette[fanIndex % colorPalette.length];
+
+                if (dataset.label === fanName) {
+                    // 高亮的曲线：保持原样
+                    dataset.borderColor = originalColor;
+                    dataset.backgroundColor = originalColor + '40';
+                    dataset.pointBackgroundColor = originalColor;
+                    dataset.pointBorderColor = originalColor;
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 3;
+                } else {
+                    // 其他曲线：变透明（30%透明度）
+                    const fadedColor = hexToRgba(originalColor, 0.3);
+                    dataset.borderColor = fadedColor;
+                    dataset.backgroundColor = hexToRgba(originalColor, 0.12);
+                    dataset.pointBackgroundColor = fadedColor;
+                    dataset.pointBorderColor = fadedColor;
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 3;
+                }
+                
+                // 直接更新已渲染的点元素样式
+                const meta = chart.getDatasetMeta(datasetIndex);
+                if (meta && meta.data) {
+                    meta.data.forEach(point => {
+                        if (dataset.label === fanName) {
+                            point.options.backgroundColor = originalColor;
+                            point.options.borderColor = originalColor;
+                        } else {
+                            const fadedColor = hexToRgba(originalColor, 0.3);
+                            point.options.backgroundColor = fadedColor;
+                            point.options.borderColor = fadedColor;
+                        }
+                    });
+                }
+            });
+
+            chart.update('none'); // 快速更新，不带动画
+        }
+
+        // 重置图表高亮状态
+        function resetChartHighlight() {
+            if (!chart) return;
+            
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
+            
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const fanIndex = fans.indexOf(dataset.label);
+                if (fanIndex !== -1) {
+                    const color = colorPalette[fanIndex % colorPalette.length];
+                    dataset.borderColor = color;
+                    dataset.backgroundColor = color + '40';
+                    dataset.pointBackgroundColor = color;
+                    dataset.pointBorderColor = color;
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 3;
+                    
+                    // 直接更新已渲染的点元素样式
+                    const meta = chart.getDatasetMeta(datasetIndex);
+                    if (meta && meta.data) {
+                        meta.data.forEach(point => {
+                            point.options.backgroundColor = color;
+                            point.options.borderColor = color;
+                        });
+                    }
+                }
+            });
+
+            chart.update('none');
         }
 
         // 更新图表
