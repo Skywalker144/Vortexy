@@ -359,24 +359,21 @@
 
             /* 手机端收起/展开按钮样式 */
             .toggle-sidebar-btn {
-                position: absolute;
+                position: fixed;
                 left: 50%;
                 top: auto;
-                bottom: -16px;
+                bottom: auto;
                 transform: translateX(-50%);
                 width: 32px;
                 height: 16px;
                 border-radius: 0 0 16px 16px;
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
                 z-index: 101;
+                transition: top 0.3s ease;
             }
 
             .toggle-sidebar-btn.collapsed {
-                position: fixed;
-                left: 50%;
-                top: 0;
-                bottom: auto;
-                border-radius: 0 0 16px 16px;
+                top: 0 !important;
             }
 
             .toggle-sidebar-btn svg {
@@ -1152,10 +1149,40 @@
             const toggleBtn = document.getElementById('toggleSidebar');
             const sidebar = document.getElementById('sidebar');
             
+            // 更新手机端按钮位置
+            function updateMobileButtonPosition() {
+                if (isMobile() && !sidebar.classList.contains('collapsed')) {
+                    const sidebarRect = sidebar.getBoundingClientRect();
+                    toggleBtn.style.top = sidebarRect.bottom + 'px';
+                }
+            }
+            
             toggleBtn.addEventListener('click', () => {
                 const isCollapsed = sidebar.classList.toggle('collapsed');
                 toggleBtn.classList.toggle('collapsed', isCollapsed);
                 toggleBtn.title = isCollapsed ? '展开侧边栏' : '收起侧边栏';
+                
+                // 手机端更新按钮位置
+                if (isMobile()) {
+                    if (isCollapsed) {
+                        toggleBtn.style.top = '0';
+                    } else {
+                        // 等待过渡动画完成后更新位置
+                        setTimeout(updateMobileButtonPosition, 310);
+                    }
+                }
+            });
+            
+            // 初始化时设置手机端按钮位置
+            if (isMobile()) {
+                updateMobileButtonPosition();
+            }
+            
+            // 窗口大小变化时更新按钮位置
+            window.addEventListener('resize', () => {
+                if (isMobile() && !sidebar.classList.contains('collapsed')) {
+                    updateMobileButtonPosition();
+                }
             });
         }
 
