@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风扇温升-噪声曲线对比</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #333333;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            width: 280px;
+            background: #f5f5f5;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #eeeeee;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .project-select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .project-select:hover {
+            border-color: #999;
+        }
+
+        .project-select option {
+            background: #fff;
+            color: #333;
+        }
+
+        .fan-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .fan-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .fan-list-header h3 {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .select-all-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            background: #6495ed;
+            border: 1px solid #5a85d7;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-all-btn:hover {
+            background: #5a85d7;
+        }
+
+        .fan-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .fan-item:hover {
+            background: #f0f0f0;
+            border-color: #ccc;
+        }
+
+        .fan-item.selected {
+            background: #e8f0ff;
+            border-color: #6495ed;
+        }
+
+        .fan-checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            accent-color: #6495ed;
+            cursor: pointer;
+        }
+
+        .fan-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .fan-name {
+            font-size: 13px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .chart-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .chart-container {
+            flex: 1;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            position: relative;
+            min-height: 0;
+        }
+
+        #fanChart {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f0f0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+            }
+
+            .main-content {
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 左侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 项目选择</h2>
+                <select id="projectSelect" class="project-select">
+                    <option value="">-- 请选择项目 --</option>
+                </select>
+            </div>
+            <div class="fan-list-container">
+                <div class="fan-list-header">
+                    <h3>🌀 风扇列表</h3>
+                    <button id="selectAllBtn" class="select-all-btn">全选</button>
+                </div>
+                <div id="fanList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <p>请先选择一个项目</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="chart-header">
+                <h1>温升-噪声曲线</h1>
+                <span id="chartInfo" class="chart-info">横坐标: 噪声 (dBA) | 纵坐标: CPU温升 (°C)</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="fanChart"></canvas>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 全局变量
+        let allData = {};
+        let currentProject = '';
+        let selectedFans = new Set();
+        let chart = null;
+
+        // 颜色调色板
+        const colorPalette = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#FF6384', '#C9CBCF', '#7BC225', '#E8175D',
+            '#1E90FF', '#32CD32', '#FFD700', '#FF4500', '#DA70D6',
+            '#00CED1', '#FF1493', '#00FA9A', '#8A2BE2', '#DC143C',
+            '#00BFFF', '#ADFF2F', '#FF69B4', '#20B2AA', '#9370DB',
+            '#F0E68C', '#87CEEB', '#DDA0DD', '#98FB98', '#FFA07A',
+            '#B0C4DE', '#FFDAB9', '#E6E6FA', '#FFC0CB', '#F5DEB3'
+        ];
+
+        // 初始化
+        async function init() {
+            try {
+                const response = await fetch('data.json');
+                allData = await response.json();
+                populateProjectSelect();
+                initChart();
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                alert('加载数据失败，请确保 data.json 文件存在');
+            }
+        }
+
+        // 填充项目选择下拉框
+        function populateProjectSelect() {
+            const select = document.getElementById('projectSelect');
+            const projects = Object.keys(allData).sort();
+            
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project;
+                option.textContent = project;
+                select.appendChild(option);
+            });
+
+            select.addEventListener('change', (e) => {
+                currentProject = e.target.value;
+                selectedFans.clear();
+                renderFanList();
+                updateChart();
+            });
+        }
+
+        // 渲染风扇列表
+        function renderFanList() {
+            const container = document.getElementById('fanList');
+            
+            if (!currentProject || !allData[currentProject]) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <p>请先选择一个项目</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const fans = Object.keys(allData[currentProject]).sort();
+            container.innerHTML = '';
+
+            fans.forEach((fan, index) => {
+                const color = colorPalette[index % colorPalette.length];
+                const item = document.createElement('div');
+                item.className = `fan-item ${selectedFans.has(fan) ? 'selected' : ''}`;
+                item.innerHTML = `
+                    <input type="checkbox" class="fan-checkbox" ${selectedFans.has(fan) ? 'checked' : ''}>
+                    <div class="fan-color" style="background-color: ${color}"></div>
+                    <span class="fan-name" title="${fan}">${fan}</span>
+                `;
+                
+                item.addEventListener('click', (e) => {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = item.querySelector('.fan-checkbox');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    
+                    const checkbox = item.querySelector('.fan-checkbox');
+                    if (checkbox.checked) {
+                        selectedFans.add(fan);
+                        item.classList.add('selected');
+                    } else {
+                        selectedFans.delete(fan);
+                        item.classList.remove('selected');
+                    }
+                    updateChart();
+                });
+
+                container.appendChild(item);
+            });
+        }
+
+        // 全选/取消全选
+        document.getElementById('selectAllBtn').addEventListener('click', () => {
+            if (!currentProject || !allData[currentProject]) return;
+
+            const fans = Object.keys(allData[currentProject]);
+            const allSelected = fans.every(fan => selectedFans.has(fan));
+
+            if (allSelected) {
+                selectedFans.clear();
+            } else {
+                fans.forEach(fan => selectedFans.add(fan));
+            }
+
+            renderFanList();
+            updateChart();
+        });
+
+        // 初始化图表
+        function initChart() {
+            const ctx = document.getElementById('fanChart').getContext('2d');
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'nearest',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#333',
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return [
+                                        `${context.dataset.label}`,
+                                        `噪声: ${point.x.toFixed(1)} dBA`,
+                                        `温升: ${point.y.toFixed(1)} °C`,
+                                        `转速: ${point.rpm} RPM`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: '噪声 (dBA)',
+                                color: '#333',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'CPU温升 (°C)',
+                                color: '#333',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#666'
+                            },
+                            reverse: false  // 温度高在上面
+                        }
+                    }
+                }
+            });
+        }
+
+        // 更新图表
+        function updateChart() {
+            if (!chart) return;
+
+            const datasets = [];
+            const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
+
+            fans.forEach((fan, index) => {
+                if (!selectedFans.has(fan)) return;
+
+                const color = colorPalette[index % colorPalette.length];
+                const fanData = allData[currentProject][fan];
+
+                datasets.push({
+                    label: fan,
+                    data: fanData.map(point => ({
+                        x: point.noise,
+                        y: point.temp,
+                        rpm: point.rpm
+                    })),
+                    borderColor: color,
+                    backgroundColor: color + '40',
+                    borderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.3,
+                    fill: false
+                });
+            });
+
+            chart.data.datasets = datasets;
+            chart.update();
+        }
+
+        // 启动应用
+        init();
+    </script>
+</body>
+</html>
