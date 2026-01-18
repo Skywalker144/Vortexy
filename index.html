@@ -292,6 +292,34 @@
         let selectedFans = new Set();
         let chart = null;
 
+        // ========== 自定义排序配置 ==========
+        // 项目排序：按照数组顺序显示，不在数组中的项目会排在最后
+        const PROJECT_ORDER = [
+            'AK700换扇重制版',
+            'RT600换扇',
+            'AK400G2换扇',
+            '双塔单扇双扇三扇',
+            '双塔双扇不同布局',
+            '挑战者SE单扇双扇',
+            'Hyper612APEX单扇双扇',
+            'RZ700D换扇',
+            'AK700单扇双扇',
+        ];
+
+        // 自定义排序函数
+        function customSort(items, orderArray) {
+            return items.sort((a, b) => {
+                const indexA = orderArray.indexOf(a);
+                const indexB = orderArray.indexOf(b);
+                // 不在配置中的项目排到最后，按字母排序
+                if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+            });
+        }
+        // =====================================
+
         // 颜色调色板
         const colorPalette = [
             '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
@@ -314,8 +342,8 @@
             try {
                 const response = await fetch('data.json');
                 allData = await response.json();
-                populateProjectSelect();
                 initChart();
+                populateProjectSelect();
             } catch (error) {
                 console.error('加载数据失败:', error);
                 alert('加载数据失败，请确保 data.json 文件存在');
@@ -325,7 +353,7 @@
         // 填充项目选择下拉框
         function populateProjectSelect() {
             const select = document.getElementById('projectSelect');
-            const projects = Object.keys(allData).sort();
+            const projects = customSort(Object.keys(allData), PROJECT_ORDER);
             
             projects.forEach(project => {
                 const option = document.createElement('option');
@@ -338,8 +366,24 @@
                 currentProject = e.target.value;
                 selectedFans.clear();
                 renderFanList();
+                // 自动勾选全部风扇
+                if (currentProject && allData[currentProject]) {
+                    const fans = Object.keys(allData[currentProject]);
+                    fans.forEach(fan => selectedFans.add(fan));
+                    renderFanList();
+                }
                 updateChart();
             });
+
+            // 默认选择第一个项目并自动勾选全部风扇
+            if (projects.length > 0) {
+                select.value = projects[0];
+                currentProject = projects[0];
+                const fans = Object.keys(allData[currentProject]);
+                fans.forEach(fan => selectedFans.add(fan));
+                renderFanList();
+                updateChart();
+            }
         }
 
         // 渲染风扇列表
@@ -423,7 +467,7 @@
                     maintainAspectRatio: false,
                     interaction: {
                         mode: 'nearest',
-                        intersect: false
+                        intersect: true
                     },
                     plugins: {
                         legend: {
@@ -525,8 +569,11 @@
                     borderColor: color,
                     backgroundColor: color + '40',
                     borderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: color,
+                    pointBorderColor: color,
+                    pointBorderWidth: 0,
                     tension: 0.3,
                     fill: false
                 });
