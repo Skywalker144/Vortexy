@@ -273,6 +273,14 @@
             border: 1px solid #e0e0e0;
             position: relative;
             min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-wrapper {
+            flex: 1;
+            min-height: 0;
+            position: relative;
         }
 
         #fanChart {
@@ -319,6 +327,11 @@
             font-size: 16px;
         }
 
+        /* 自定义HTML图例容器 */
+        .legend-container {
+            display: none;
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
             .container {
@@ -329,10 +342,141 @@
                 width: 100%;
                 height: auto;
                 max-height: 40vh;
+                border-right: none;
+                border-bottom: none;
+                transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .sidebar.collapsed {
+                width: 100%;
+                max-height: 0;
+                margin-left: 0;
+                padding: 0;
+                border-bottom: none;
+            }
+
+            /* 手机端收起/展开按钮样式 */
+            .toggle-sidebar-btn {
+                position: absolute;
+                left: 50%;
+                top: auto;
+                bottom: -16px;
+                transform: translateX(-50%);
+                width: 32px;
+                height: 16px;
+                border-radius: 0 0 16px 16px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+                z-index: 101;
+            }
+
+            .toggle-sidebar-btn.collapsed {
+                position: fixed;
+                left: 50%;
+                top: 0;
+                bottom: auto;
+                border-radius: 0 0 16px 16px;
+            }
+
+            .toggle-sidebar-btn svg {
+                width: 14px;
+                height: 14px;
+                transform: rotate(90deg);
+            }
+
+            .toggle-sidebar-btn.collapsed svg {
+                transform: rotate(-90deg);
             }
 
             .main-content {
-                height: 60vh;
+                flex: 1;
+                height: auto;
+                min-height: 60vh;
+                padding: 10px;
+                padding-top: 20px;
+            }
+
+            .chart-container {
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                height: 100%;
+            }
+
+            #projectTitle {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                transform: none !important;
+                text-align: center;
+                margin-bottom: 10px;
+                font-size: 16px !important;
+            }
+
+            .chart-wrapper {
+                flex: 1;
+                min-height: 0;
+                position: relative;
+            }
+
+            /* 手机端显示自定义图例 */
+            .legend-container {
+                display: block;
+                max-height: 100px;
+                overflow-y: auto;
+                margin-top: 10px;
+                padding: 8px;
+                background: #f9f9f9;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+            }
+
+            .legend-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                padding: 4px 8px;
+                background: #fff;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                border: 1px solid #e0e0e0;
+                transition: all 0.2s ease;
+            }
+
+            .legend-item:hover {
+                background: #f0f0f0;
+            }
+
+            .legend-item.highlighted {
+                background: #e8f0ff;
+                border-color: #6495ed;
+            }
+
+            .legend-item.faded {
+                opacity: 0.3;
+            }
+
+            .legend-color {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 6px;
+                flex-shrink: 0;
+            }
+
+            .legend-label {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 120px;
             }
         }
     </style>
@@ -373,7 +517,13 @@
         <main class="main-content">
             <div class="chart-container">
                 <h2 id="projectTitle" style="position: absolute; top: 1px; left: 50%; transform: translateX(-50%); font-size: 18px; color: #333; margin: 0; font-weight: bold; z-index: 10;">请选择项目</h2>
-                <canvas id="fanChart"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="fanChart"></canvas>
+                </div>
+                <!-- 手机端自定义图例 -->
+                <div class="legend-container" id="legendContainer">
+                    <div class="legend-list" id="legendList"></div>
+                </div>
             </div>
         </main>
     </div>
@@ -413,6 +563,11 @@
             });
         }
         // =====================================
+
+        // 检测是否为手机端
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
 
         // 颜色调色板
         const colorPalette = [
@@ -582,6 +737,7 @@
                     },
                     plugins: {
                         legend: {
+                            display: !isMobile(), // 手机端隐藏原生图例
                             position: 'right',
                             labels: {
                                 color: '#333',
@@ -914,6 +1070,81 @@
 
             chart.data.datasets = datasets;
             chart.update();
+            
+            // 手机端渲染自定义图例
+            if (isMobile()) {
+                renderMobileLegend();
+            }
+        }
+
+        // 渲染手机端自定义图例
+        function renderMobileLegend() {
+            const legendList = document.getElementById('legendList');
+            if (!legendList) return;
+            
+            legendList.innerHTML = '';
+            
+            if (!currentProject || !allData[currentProject]) return;
+            
+            const fans = Object.keys(allData[currentProject]);
+            
+            fans.forEach((fan, index) => {
+                if (!selectedFans.has(fan)) return;
+                
+                const color = colorPalette[index % colorPalette.length];
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.dataset.fan = fan;
+                
+                // 根据高亮状态设置样式
+                if (highlightedFans.size > 0) {
+                    if (highlightedFans.has(fan)) {
+                        item.classList.add('highlighted');
+                    } else {
+                        item.classList.add('faded');
+                    }
+                }
+                
+                item.innerHTML = `
+                    <div class="legend-color" style="background-color: ${color}"></div>
+                    <span class="legend-label" title="${fan}">${fan}</span>
+                `;
+                
+                // 点击切换高亮
+                item.addEventListener('click', () => {
+                    if (highlightedFans.has(fan)) {
+                        highlightedFans.delete(fan);
+                        if (highlightedFans.size === 0) {
+                            resetChartHighlight();
+                        } else {
+                            applyHighlight();
+                        }
+                    } else {
+                        highlightedFans.add(fan);
+                        applyHighlight();
+                    }
+                    updateMobileLegendStyles();
+                });
+                
+                legendList.appendChild(item);
+            });
+        }
+
+        // 更新手机端图例样式
+        function updateMobileLegendStyles() {
+            const legendItems = document.querySelectorAll('.legend-item');
+            legendItems.forEach(item => {
+                const fan = item.dataset.fan;
+                item.classList.remove('highlighted', 'faded');
+                
+                if (highlightedFans.size > 0) {
+                    if (highlightedFans.has(fan)) {
+                        item.classList.add('highlighted');
+                    } else {
+                        item.classList.add('faded');
+                    }
+                }
+            });
         }
 
         // 侧边栏收起/展开功能
@@ -927,6 +1158,24 @@
                 toggleBtn.title = isCollapsed ? '展开侧边栏' : '收起侧边栏';
             });
         }
+
+        // 窗口大小变化时更新图例显示
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (chart) {
+                    // 更新图表的图例显示设置
+                    chart.options.plugins.legend.display = !isMobile();
+                    chart.update();
+                    
+                    // 手机端渲染自定义图例
+                    if (isMobile()) {
+                        renderMobileLegend();
+                    }
+                }
+            }, 100);
+        });
 
         // 启动应用
         init();
