@@ -374,6 +374,8 @@
 
             .toggle-sidebar-btn.collapsed {
                 top: 0 !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
             }
 
             .toggle-sidebar-btn svg {
@@ -1166,10 +1168,17 @@
                 if (isMobile()) {
                     if (isCollapsed) {
                         toggleBtn.style.top = '0';
+                        toggleBtn.style.left = '50%';
+                        toggleBtn.style.transform = 'translateX(-50%)';
                     } else {
                         // 等待过渡动画完成后更新位置
                         setTimeout(updateMobileButtonPosition, 310);
                     }
+                } else {
+                    // 桌面端：清除手机端可能设置的内联样式
+                    toggleBtn.style.top = '';
+                    toggleBtn.style.left = '';
+                    toggleBtn.style.transform = '';
                 }
             });
             
@@ -1180,8 +1189,15 @@
             
             // 窗口大小变化时更新按钮位置
             window.addEventListener('resize', () => {
-                if (isMobile() && !sidebar.classList.contains('collapsed')) {
-                    updateMobileButtonPosition();
+                if (isMobile()) {
+                    if (!sidebar.classList.contains('collapsed')) {
+                        updateMobileButtonPosition();
+                    }
+                } else {
+                    // 桌面端：清除手机端可能设置的内联样式
+                    toggleBtn.style.top = '';
+                    toggleBtn.style.left = '';
+                    toggleBtn.style.transform = '';
                 }
             });
         }
