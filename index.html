@@ -313,11 +313,8 @@
 
         <!-- 主内容区 -->
         <main class="main-content">
-            <div class="chart-header">
-                <h1>温升-噪声曲线</h1>
-                <span id="chartInfo" class="chart-info">横坐标: 噪声 (dBA) | 纵坐标: CPU温升 (°C)</span>
-            </div>
             <div class="chart-container">
+                <h2 id="projectTitle" style="position: absolute; top: 5px; left: 50%; transform: translateX(-50%); font-size: 18px; color: #333; margin: 0; font-weight: bold; z-index: 10;">请选择项目</h2>
                 <canvas id="fanChart"></canvas>
             </div>
         </main>
@@ -703,6 +700,10 @@
         // 更新图表
         function updateChart() {
             if (!chart) return;
+
+            // 更新项目标题
+            const projectTitle = document.getElementById('projectTitle');
+            projectTitle.textContent = currentProject || '请选择项目';
 
             const datasets = [];
             const fans = currentProject ? Object.keys(allData[currentProject] || {}).sort() : [];
