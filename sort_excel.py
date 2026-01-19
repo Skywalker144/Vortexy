@@ -157,7 +157,7 @@ def process_single_file(input_path, output_path):
 
 
 def main():
-    xlsx_folder = 'xlsx'
+    xlsx_folder = 'xlsx_origin'
     output_folder = 'xlsx_sorted'
     
     # 创建输出文件夹

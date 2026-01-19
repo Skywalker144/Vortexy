@@ -263,7 +263,6 @@
             background: #fff;
             border-radius: 16px;
             padding: 20px;
-            border: 1px solid #e0e0e0;
             position: relative;
             min-height: 0;
             display: flex;
@@ -421,7 +420,6 @@
                 padding: 8px;
                 background: #f9f9f9;
                 border-radius: 8px;
-                border: 1px solid #e0e0e0;
             }
 
             .legend-list {
@@ -723,7 +721,11 @@
                                 usePointStyle: true,
                                 pointStyle: 'circle',
                                 boxWidth: 9,
-                                boxHeight: 9
+                                boxHeight: 9,
+                                boxPadding: 0
+                            },
+                            title: {
+                                display: false
                             },
                             onClick: function(e, legendItem, legend) {
                                 // 自定义点击行为：切换高亮状态（支持多选）
