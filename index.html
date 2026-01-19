@@ -979,10 +979,20 @@
             let allNoiseValues = [];
             let allTempValues = [];
 
+            // 先清理不再显示的高亮风扇
+            if (highlightedFans.size > 0) {
+                const willDisplayFans = new Set(fans.filter(fan => selectedFans.has(fan)));
+                highlightedFans.forEach(fan => {
+                    if (!willDisplayFans.has(fan)) {
+                        highlightedFans.delete(fan);
+                    }
+                });
+            }
+
             fans.forEach((fan, index) => {
                 if (!selectedFans.has(fan)) return;
 
-                const color = colorPalette[index % colorPalette.length];
+                const originalColor = colorPalette[index % colorPalette.length];
                 const fanData = allData[currentProject][fan];
                 
                 // 收集噪声值和温度值
@@ -991,6 +1001,23 @@
                     allTempValues.push(point.temp);
                 });
 
+                // 根据高亮状态决定颜色
+                let borderColor, backgroundColor, pointBackgroundColor, pointBorderColor;
+                if (highlightedFans.size > 0 && !highlightedFans.has(fan)) {
+                    // 有高亮风扇，但当前风扇不在高亮列表中，使用透明色
+                    const fadedColor = hexToRgba(originalColor, 0.1);
+                    borderColor = fadedColor;
+                    backgroundColor = hexToRgba(originalColor, 0.05);
+                    pointBackgroundColor = fadedColor;
+                    pointBorderColor = fadedColor;
+                } else {
+                    // 没有高亮风扇，或当前风扇在高亮列表中，使用原色
+                    borderColor = originalColor;
+                    backgroundColor = originalColor + '40';
+                    pointBackgroundColor = originalColor;
+                    pointBorderColor = originalColor;
+                }
+
                 datasets.push({
                     label: fan,
                     data: fanData.map(point => ({
@@ -998,13 +1025,13 @@
                         y: point.temp,
                         rpm: point.rpm
                     })),
-                    borderColor: color,
-                    backgroundColor: color + '40',
+                    borderColor: borderColor,
+                    backgroundColor: backgroundColor,
                     borderWidth: 2,
                     pointRadius: 3,
                     pointHoverRadius: 5,
-                    pointBackgroundColor: color,
-                    pointBorderColor: color,
+                    pointBackgroundColor: pointBackgroundColor,
+                    pointBorderColor: pointBorderColor,
                     pointBorderWidth: 0,
                     tension: 0.3,
                     fill: false
