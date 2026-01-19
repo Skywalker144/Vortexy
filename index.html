@@ -172,13 +172,6 @@
             border-color: #ccc;
         }
 
-        .fan-item.highlight {
-            background: #fff3cd;
-            border-color: #ffc107;
-            box-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
-            transform: scale(1.02);
-        }
-
         .fan-item.selected {
             background: #e8f0ff;
             border-color: #6495ed;
@@ -678,23 +671,6 @@
                         item.classList.remove('selected');
                     }
                     updateChart();
-                });
-
-                // 鼠标悬停高亮效果
-                item.addEventListener('mouseenter', () => {
-                    item.classList.add('highlight');
-                    if (highlightedFans.size === 0) {
-                        // 只有在没有固定高亮时才响应悬停
-                        highlightFanInChart(fan);
-                    }
-                });
-
-                item.addEventListener('mouseleave', () => {
-                    item.classList.remove('highlight');
-                    if (highlightedFans.size === 0) {
-                        // 只有在没有固定高亮时才重置
-                        resetChartHighlight();
-                    }
                 });
 
                 container.appendChild(item);
