@@ -706,11 +706,34 @@
         function initChart() {
             const ctx = document.getElementById('fanChart').getContext('2d');
             
+            // 水印插件
+            const watermarkPlugin = {
+                id: 'watermark',
+                afterDraw: (chart) => {
+                    const ctx = chart.ctx;
+                    const { top, left, width, height } = chart.chartArea;
+                    if (!top || !left || !width || !height) return;
+
+                    ctx.save();
+                    ctx.globalAlpha = 0.1;
+                    ctx.font = 'bold 36px Arial';
+                    ctx.fillStyle = '#1f2937';
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'bottom';
+                    
+                    // 在图表区域右下角绘制水印
+                    ctx.fillText('B站Convergence42', left + width - 20, top + height - 20);
+                    
+                    ctx.restore();
+                }
+            };
+            
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     datasets: []
                 },
+                plugins: [watermarkPlugin],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
