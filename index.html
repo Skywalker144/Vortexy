@@ -67,37 +67,38 @@
         /* 收起/展开按钮 */
         .toggle-sidebar-btn {
             position: absolute;
-            left: var(--sidebar-width);
-            top: 50%;
-            transform: translateY(-50%);
-            width: 24px;
-            height: 48px;
-            background: var(--bg-white);
-            border: 1px solid var(--border-color);
-            border-left: none;
-            border-radius: 0 8px 8px 0;
+            left: calc(var(--sidebar-width) - 44px);
+            top: 14px;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 30;
-            transition: left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 4px 0 8px rgba(0,0,0,0.05);
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: none;
         }
 
         .toggle-sidebar-btn:hover {
             background: var(--primary-light);
+            border-color: rgba(79, 70, 229, 0.1);
             color: var(--primary-color);
         }
 
         .container.sidebar-closed .toggle-sidebar-btn {
-            left: 0;
-            transform: translate(0, -50%);
+            left: 12px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .toggle-sidebar-btn svg {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             fill: var(--text-secondary);
             transition: transform var(--transition-speed);
         }
