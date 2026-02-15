@@ -816,6 +816,40 @@
             }
         }
 
+        // 根据最长风扇名字自动调整侧边栏宽度
+        function adjustSidebarWidth() {
+            if (!currentProject || !allData[currentProject]) return;
+            
+            const fans = Object.keys(allData[currentProject]);
+            if (fans.length === 0) return;
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            // 保持与 .fan-name 相同的字体样式
+            context.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+
+            let maxTextWidth = 0;
+            fans.forEach(fan => {
+                const width = context.measureText(fan).width;
+                if (width > maxTextWidth) maxTextWidth = width;
+            });
+
+            // 计算所需总宽度：
+            // fan-list-container padding: 16px * 2 = 32px
+            // fan-item padding: 12px * 2 = 24px
+            // checkbox width + margin: 18px + 12px = 30px
+            // color width + margin: 10px + 10px = 20px
+            // 滚动条预留 + 额外缓冲: ~34px
+            // 总计固定宽度: 140px
+            const paddingAndMargins = 140;
+            const requiredWidth = Math.ceil(maxTextWidth + paddingAndMargins);
+            
+            // 限制最小宽度为 260px (默认值)，最大宽度可设为 500px 防止过宽
+            const newWidth = Math.max(200, Math.min(500, requiredWidth));
+            
+            document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
+        }
+
         // 渲染风扇列表
         function renderFanList() {
             const container = document.getElementById('fanList');
@@ -864,6 +898,8 @@
 
                 container.appendChild(item);
             });
+            
+            adjustSidebarWidth();
         }
 
         // 全选/取消全选
