@@ -884,6 +884,52 @@
             updateChart();
         });
 
+        // 计算图表坐标轴范围
+        function calculateScaleRanges(fansToInclude) {
+            if (!currentProject || !allData[currentProject]) return null;
+            
+            let allNoiseValues = [];
+            let allTempValues = [];
+            let hasData = false;
+            
+            fansToInclude.forEach(fan => {
+                if (!allData[currentProject][fan]) return;
+                const fanData = allData[currentProject][fan];
+                fanData.forEach(point => {
+                    allNoiseValues.push(point.noise);
+                    allTempValues.push(point.temp);
+                    hasData = true;
+                });
+            });
+            
+            if (!hasData) return null;
+            
+            const minNoise = Math.min(...allNoiseValues);
+            const maxNoise = Math.max(...allNoiseValues);
+            const xMin = Math.floor(minNoise - 1);
+            const xMax = Math.ceil(maxNoise + 1);
+            
+            const minTemp = Math.min(...allTempValues);
+            const maxTemp = Math.max(...allTempValues);
+            const yMin = Math.floor(minTemp - 0.7);
+            const yMax = Math.ceil(maxTemp + 0.7);
+            
+            return { xMin, xMax, yMin, yMax };
+        }
+
+        // 获取用于缩放的风扇列表
+        function getFansForScaling() {
+            // 如果有高亮风扇，仅使用高亮风扇（需过滤掉未被勾选的）
+            if (highlightedFans.size > 0) {
+                const validHighlightedFans = [...highlightedFans].filter(fan => selectedFans.has(fan));
+                if (validHighlightedFans.length > 0) {
+                    return validHighlightedFans;
+                }
+            }
+            // 否则使用所有勾选的风扇
+            return [...selectedFans];
+        }
+
         // 初始化图表
         function initChart() {
             const ctx = document.getElementById('fanChart').getContext('2d');
@@ -1096,7 +1142,18 @@
                 }
             });
 
-            chart.update('none'); // 快速更新，不带动画
+            // 更新坐标轴缩放
+            const fansToScale = getFansForScaling();
+            const scaleRanges = calculateScaleRanges(fansToScale);
+            
+            if (scaleRanges) {
+                chart.options.scales.x.min = scaleRanges.xMin;
+                chart.options.scales.x.max = scaleRanges.xMax;
+                chart.options.scales.y.min = scaleRanges.yMin;
+                chart.options.scales.y.max = scaleRanges.yMax;
+            }
+
+            chart.update(); // 完整更新以应用缩放
         }
 
         // 重置图表高亮状态
@@ -1127,7 +1184,23 @@
                 }
             });
 
-            chart.update('none');
+            // 重置坐标轴缩放（使用所有勾选的风扇）
+            const fansToScale = getFansForScaling();
+            const scaleRanges = calculateScaleRanges(fansToScale);
+            
+            if (scaleRanges) {
+                chart.options.scales.x.min = scaleRanges.xMin;
+                chart.options.scales.x.max = scaleRanges.xMax;
+                chart.options.scales.y.min = scaleRanges.yMin;
+                chart.options.scales.y.max = scaleRanges.yMax;
+            } else {
+                chart.options.scales.x.min = undefined;
+                chart.options.scales.x.max = undefined;
+                chart.options.scales.y.min = undefined;
+                chart.options.scales.y.max = undefined;
+            }
+
+            chart.update(); // 完整更新
         }
 
         // 更新图表
@@ -1141,10 +1214,6 @@
             const datasets = [];
             const fans = currentProject ? Object.keys(allData[currentProject] || {}) : []; // 保持Excel原始顺序
             
-            // 收集所有选中风扇的噪声值和温度值，用于计算坐标轴范围
-            let allNoiseValues = [];
-            let allTempValues = [];
-
             // 先清理不再显示的高亮风扇
             if (highlightedFans.size > 0) {
                 const willDisplayFans = new Set(fans.filter(fan => selectedFans.has(fan)));
@@ -1161,12 +1230,6 @@
                 const originalColor = colorPalette[index % colorPalette.length];
                 const fanData = allData[currentProject][fan];
                 
-                // 收集噪声值和温度值
-                fanData.forEach(point => {
-                    allNoiseValues.push(point.noise);
-                    allTempValues.push(point.temp);
-                });
-
                 // 根据高亮状态决定颜色
                 let borderColor, backgroundColor, pointBackgroundColor, pointBorderColor;
                 if (highlightedFans.size > 0 && !highlightedFans.has(fan)) {
@@ -1204,34 +1267,19 @@
                 });
             });
 
-            // 自适应调整x轴范围
-            if (allNoiseValues.length > 0) {
-                const minNoise = Math.min(...allNoiseValues);
-                const maxNoise = Math.max(...allNoiseValues);
-                // 设置x轴最小值为数据最小值减去1 dBA的边距，向下取整到整数
-                const xMin = Math.floor(minNoise - 1);
-                // 设置x轴最大值为数据最大值加上1 dBA的边距，向上取整到整数
-                const xMax = Math.ceil(maxNoise + 1);
-                chart.options.scales.x.min = xMin;
-                chart.options.scales.x.max = xMax;
+            // 自适应调整坐标轴范围
+            const fansToScale = getFansForScaling();
+            const scaleRanges = calculateScaleRanges(fansToScale);
+            
+            if (scaleRanges) {
+                chart.options.scales.x.min = scaleRanges.xMin;
+                chart.options.scales.x.max = scaleRanges.xMax;
+                chart.options.scales.y.min = scaleRanges.yMin;
+                chart.options.scales.y.max = scaleRanges.yMax;
             } else {
                 // 没有数据时重置为自动
                 chart.options.scales.x.min = undefined;
                 chart.options.scales.x.max = undefined;
-            }
-
-            // 自适应调整y轴范围
-            if (allTempValues.length > 0) {
-                const minTemp = Math.min(...allTempValues);
-                const maxTemp = Math.max(...allTempValues);
-                // 设置y轴最小值为数据最小值减去1°C的边距，向下取整到整数
-                const yMin = Math.floor(minTemp - 0.7);
-                // 设置y轴最大值为数据最大值加上1°C的边距，向上取整到整数
-                const yMax = Math.ceil(maxTemp + 0.7);
-                chart.options.scales.y.min = yMin;
-                chart.options.scales.y.max = yMax;
-            } else {
-                // 没有数据时重置为自动
                 chart.options.scales.y.min = undefined;
                 chart.options.scales.y.max = undefined;
             }
