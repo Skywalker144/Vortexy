@@ -312,11 +312,155 @@
             flex: 1;
             min-height: 0;
             position: relative;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .canvas-container {
+            flex: 1;
+            min-width: 0;
+            position: relative;
         }
 
         #fanChart {
             width: 100% !important;
             height: 100% !important;
+        }
+
+        /* 右侧图例面板 */
+        .legend-panel {
+            width: 180px;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-left: 1px solid var(--border-color);
+            background: var(--bg-white);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .legend-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        .legend-controls {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .opacity-control {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .opacity-control label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .opacity-slider {
+            width: 100%;
+            cursor: pointer;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .opacity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .opacity-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .reset-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .custom-legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .legend-item:hover {
+            background-color: var(--bg-body);
+        }
+        
+        .legend-item.highlighted {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .legend-item.faded {
+            opacity: 0.5;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+        }
+        
+        .legend-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
         }
 
         /* 滚动条样式 */
@@ -378,6 +522,14 @@
                 max-height: 40vh;
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
+            }
+            
+            .chart-wrapper {
+                flex-direction: column;
+            }
+
+            .legend-panel {
+                display: none;
             }
 
             .container.sidebar-closed .sidebar {
@@ -516,7 +668,34 @@
             <div class="chart-container">
                 <h2 id="projectTitle">请选择项目</h2>
                 <div class="chart-wrapper">
-                    <canvas id="fanChart"></canvas>
+                    <div class="canvas-container">
+                        <canvas id="fanChart"></canvas>
+                    </div>
+                    <!-- 桌面端右侧图例面板 -->
+                    <div class="legend-panel">
+                        <div class="legend-hint">
+                            <p>👇 <strong>点击下方图例</strong>可高亮显示对应风扇曲线。</p>
+                        </div>
+                        <div class="legend-controls">
+                            <div class="opacity-control">
+                                <label for="opacitySlider">
+                                    <span>未选透明度</span>
+                                    <span id="opacityValue">10%</span>
+                                </label>
+                                <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="1" step="0.05" value="0.1">
+                            </div>
+                            <button id="resetHighlightBtn" class="reset-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                    <path d="M3 3v5h5"></path>
+                                </svg>
+                                重置高亮
+                            </button>
+                        </div>
+                        <div class="custom-legend-list" id="desktopLegendList">
+                            <!-- 图例项将通过JS动态生成 -->
+                        </div>
+                    </div>
                 </div>
                 <!-- 手机端自定义图例 -->
                 <div class="legend-container" id="legendContainer">
@@ -533,10 +712,12 @@
         let selectedFans = new Set();
         let chart = null;
         let highlightedFans = new Set(); // 当前被点击高亮的风扇（支持多选）
+        let inactiveOpacity = 0.1; // 未选中风扇的透明度
 
         // ========== 自定义排序配置 ==========
         // 项目排序：按照数组顺序显示，不在数组中的项目会排在最后
         const PROJECT_ORDER = [
+            "120冷排换扇",
             "AK620 G2换扇",
             "140冷排换扇",
             'AK700换扇重制版',
@@ -593,6 +774,7 @@
                 allData = await response.json();
                 initChart();
                 populateProjectSelect();
+                initControls();
             } catch (error) {
                 console.error('加载数据失败:', error);
                 alert('加载数据失败，请确保 data.json 文件存在');
@@ -743,58 +925,7 @@
                     },
                     plugins: {
                         legend: {
-                            display: !isMobile(), // 手机端隐藏原生图例
-                            position: 'right',
-                            labels: {
-                                color: '#333',
-                                padding: 15,
-                                font: {
-                                    size: 12
-                                },
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                boxWidth: 9,
-                                boxHeight: 9,
-                                boxPadding: 0
-                            },
-                            title: {
-                                display: false
-                            },
-                            onClick: function(e, legendItem, legend) {
-                                // 自定义点击行为：切换高亮状态（支持多选）
-                                const fanName = legendItem.text;
-                                if (highlightedFans.has(fanName)) {
-                                    // 如果再次点击已高亮的风扇，取消该风扇的高亮
-                                    highlightedFans.delete(fanName);
-                                    if (highlightedFans.size === 0) {
-                                        resetChartHighlight();
-                                    } else {
-                                        applyHighlight();
-                                    }
-                                } else {
-                                    // 点击新的风扇，添加到高亮集合
-                                    highlightedFans.add(fanName);
-                                    applyHighlight();
-                                }
-                            },
-                            onHover: function(e, legendItem, legend) {
-                                if (legendItem && highlightedFans.size === 0) {
-                                    // 只有在没有固定高亮时才响应悬停
-                                    const fanName = legendItem.text;
-                                    highlightFanInChart(fanName);
-                                    // 改变鼠标样式
-                                    e.native.target.style.cursor = 'pointer';
-                                } else {
-                                    e.native.target.style.cursor = 'pointer';
-                                }
-                            },
-                            onLeave: function(e, legendItem, legend) {
-                                if (highlightedFans.size === 0) {
-                                    // 只有在没有固定高亮时才重置
-                                    resetChartHighlight();
-                                }
-                                e.native.target.style.cursor = 'default';
-                            }
+                            display: false // 禁用原生图例，使用自定义HTML图例
                         },
                         tooltip: {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -891,10 +1022,10 @@
                     dataset.borderWidth = 2;
                     dataset.pointRadius = 3;
                 } else {
-                    // 其他曲线：变透明（10%透明度）
-                    const fadedColor = hexToRgba(originalColor, 0.1);
+                    // 其他曲线：变透明（使用inactiveOpacity）
+                    const fadedColor = hexToRgba(originalColor, inactiveOpacity);
                     dataset.borderColor = fadedColor;
-                    dataset.backgroundColor = hexToRgba(originalColor, 0.05);
+                    dataset.backgroundColor = hexToRgba(originalColor, inactiveOpacity * 0.5);
                     dataset.pointBackgroundColor = fadedColor;
                     dataset.pointBorderColor = fadedColor;
                     dataset.borderWidth = 2;
@@ -909,7 +1040,7 @@
                             point.options.backgroundColor = originalColor;
                             point.options.borderColor = originalColor;
                         } else {
-                            const fadedColor = hexToRgba(originalColor, 0.1);
+                            const fadedColor = hexToRgba(originalColor, inactiveOpacity);
                             point.options.backgroundColor = fadedColor;
                             point.options.borderColor = fadedColor;
                         }
@@ -939,10 +1070,10 @@
                     dataset.borderWidth = 2;
                     dataset.pointRadius = 3;
                 } else {
-                    // 其他曲线：变透明（10%透明度）
-                    const fadedColor = hexToRgba(originalColor, 0.1);
+                    // 其他曲线：变透明（使用inactiveOpacity）
+                    const fadedColor = hexToRgba(originalColor, inactiveOpacity);
                     dataset.borderColor = fadedColor;
-                    dataset.backgroundColor = hexToRgba(originalColor, 0.05);
+                    dataset.backgroundColor = hexToRgba(originalColor, inactiveOpacity * 0.5);
                     dataset.pointBackgroundColor = fadedColor;
                     dataset.pointBorderColor = fadedColor;
                     dataset.borderWidth = 2;
@@ -957,7 +1088,7 @@
                             point.options.backgroundColor = originalColor;
                             point.options.borderColor = originalColor;
                         } else {
-                            const fadedColor = hexToRgba(originalColor, 0.1);
+                            const fadedColor = hexToRgba(originalColor, inactiveOpacity);
                             point.options.backgroundColor = fadedColor;
                             point.options.borderColor = fadedColor;
                         }
@@ -1040,9 +1171,9 @@
                 let borderColor, backgroundColor, pointBackgroundColor, pointBorderColor;
                 if (highlightedFans.size > 0 && !highlightedFans.has(fan)) {
                     // 有高亮风扇，但当前风扇不在高亮列表中，使用透明色
-                    const fadedColor = hexToRgba(originalColor, 0.1);
+                    const fadedColor = hexToRgba(originalColor, inactiveOpacity);
                     borderColor = fadedColor;
-                    backgroundColor = hexToRgba(originalColor, 0.05);
+                    backgroundColor = hexToRgba(originalColor, inactiveOpacity * 0.5);
                     pointBackgroundColor = fadedColor;
                     pointBorderColor = fadedColor;
                 } else {
@@ -1111,10 +1242,123 @@
             // 手机端渲染自定义图例
             if (isMobile()) {
                 renderMobileLegend();
+            } else {
+                renderDesktopLegend();
             }
         }
 
-        // 渲染手机端自定义图例
+        // 渲染桌面端自定义图例
+        function renderDesktopLegend() {
+            const legendList = document.getElementById('desktopLegendList');
+            if (!legendList) return;
+            
+            legendList.innerHTML = '';
+            
+            if (!currentProject || !allData[currentProject]) return;
+            
+            const fans = Object.keys(allData[currentProject]);
+            
+            fans.forEach((fan, index) => {
+                if (!selectedFans.has(fan)) return;
+                
+                const color = colorPalette[index % colorPalette.length];
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.dataset.fan = fan;
+                
+                // 根据高亮状态设置样式
+                if (highlightedFans.size > 0) {
+                    if (highlightedFans.has(fan)) {
+                        item.classList.add('highlighted');
+                    } else {
+                        item.classList.add('faded');
+                    }
+                }
+                
+                item.innerHTML = `
+                    <div class="legend-color" style="background-color: ${color}"></div>
+                    <span class="legend-label" title="${fan}">${fan}</span>
+                `;
+                
+                // 悬停预览高亮
+                item.addEventListener('mouseenter', () => {
+                    if (highlightedFans.size === 0) {
+                        highlightFanInChart(fan);
+                    }
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    if (highlightedFans.size === 0) {
+                        resetChartHighlight();
+                    }
+                });
+                
+                // 点击切换高亮
+                item.addEventListener('click', () => {
+                    if (highlightedFans.has(fan)) {
+                        highlightedFans.delete(fan);
+                        if (highlightedFans.size === 0) {
+                            resetChartHighlight();
+                        } else {
+                            applyHighlight();
+                        }
+                    } else {
+                        highlightedFans.add(fan);
+                        applyHighlight();
+                    }
+                    updateDesktopLegendStyles();
+                });
+                
+                legendList.appendChild(item);
+            });
+        }
+
+        // 更新桌面端图例样式
+        function updateDesktopLegendStyles() {
+            const legendItems = document.querySelectorAll('#desktopLegendList .legend-item');
+            legendItems.forEach(item => {
+                const fan = item.dataset.fan;
+                item.classList.remove('highlighted', 'faded');
+                
+                if (highlightedFans.size > 0) {
+                    if (highlightedFans.has(fan)) {
+                        item.classList.add('highlighted');
+                    } else {
+                        item.classList.add('faded');
+                    }
+                }
+            });
+        }
+        
+        // 初始化控制面板
+        function initControls() {
+            // 透明度滑块
+            const slider = document.getElementById('opacitySlider');
+            const output = document.getElementById('opacityValue');
+            
+            if (slider && output) {
+                slider.addEventListener('input', (e) => {
+                    inactiveOpacity = parseFloat(e.target.value);
+                    output.textContent = Math.round(inactiveOpacity * 100) + '%';
+                    
+                    if (highlightedFans.size > 0) {
+                        applyHighlight();
+                    }
+                });
+            }
+            
+            // 重置高亮按钮
+            const resetBtn = document.getElementById('resetHighlightBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    highlightedFans.clear();
+                    resetChartHighlight();
+                    updateDesktopLegendStyles();
+                    // 如果在手机端也需要更新
+                    if (isMobile()) updateMobileLegendStyles();
+                });
+            }
+        }
         function renderMobileLegend() {
             const legendList = document.getElementById('legendList');
             if (!legendList) return;
@@ -1210,13 +1454,15 @@
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 if (chart) {
-                    // 更新图表的图例显示设置
-                    chart.options.plugins.legend.display = !isMobile();
+                    // 始终禁用Chart.js原生图例
+                    chart.options.plugins.legend.display = false;
                     chart.update();
                     
-                    // 手机端渲染自定义图例
+                    // 渲染对应端的自定义图例
                     if (isMobile()) {
                         renderMobileLegend();
+                    } else {
+                        renderDesktopLegend();
                     }
                 }
             }, 100);
