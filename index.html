@@ -273,7 +273,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 24px;
+            padding: 10px;
             overflow: hidden;
             background-color: var(--bg-body);
         }
@@ -281,8 +281,8 @@
         .chart-container {
             flex: 1;
             background: var(--bg-white);
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 12px;
             position: relative;
             min-height: 0;
             display: flex;
@@ -875,7 +875,7 @@
             // color width + margin: 10px + 10px = 20px
             // 滚动条预留 + 额外缓冲: ~34px
             // 总计固定宽度: 140px
-            const paddingAndMargins = 140;
+            const paddingAndMargins = 120;
             const requiredWidth = Math.ceil(maxTextWidth + paddingAndMargins);
             
             // 限制最小宽度为 260px (默认值)，最大宽度可设为 500px 防止过宽
