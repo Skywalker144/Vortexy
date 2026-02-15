@@ -680,9 +680,9 @@
                             <div class="opacity-control">
                                 <label for="opacitySlider">
                                     <span>未选透明度</span>
-                                    <span id="opacityValue">10%</span>
+                                    <span id="opacityValue">15%</span>
                                 </label>
-                                <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="1" step="0.05" value="0.1">
+                                <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="1" step="0.05" value="0.15">
                             </div>
                             <button id="resetHighlightBtn" class="reset-btn">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -712,7 +712,7 @@
         let selectedFans = new Set();
         let chart = null;
         let highlightedFans = new Set(); // 当前被点击高亮的风扇（支持多选）
-        let inactiveOpacity = 0.1; // 未选中风扇的透明度
+        let inactiveOpacity = 0.15; // 未选中风扇的透明度
 
         // ========== 自定义排序配置 ==========
         // 项目排序：按照数组顺序显示，不在数组中的项目会排在最后
@@ -752,19 +752,18 @@
 
         // 颜色调色板
         const colorPalette = [
-            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
-            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#d14a61',
-            '#6e7074', '#546570',
-            '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6ab04c',
-            '#badc58', '#f0932b', '#eb4d4b', '#c44569', '#574b90',
-            '#f8b500', '#00d2d3', '#1e3799', '#b71540', '#079992',
-            '#38ada9', '#78e08f', '#fa983a', '#e55039', '#4a69bd',
-            '#60a3bc', '#e58e26', '#f53b57', '#3c40c6', '#0fbcf9',
-            '#ffa801', '#05c46b', '#ffd32a', '#ff3f34', '#00d8d6',
-            '#e74c3c', '#9b59b6', '#3498db', '#1abc9c', '#f39c12',
-            '#d35400', '#c0392b', '#8e44ad', '#2980b9', '#27ae60',
-            '#16a085', '#f1c40f', '#e67e22', '#e84393', '#6c5ce7',
-            '#fd79a8', '#fdcb6e', '#00b894', '#0984e3', '#d63031'
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', // 保持前四种不变
+            '#8e44ad', '#1abc9c', '#d35400', '#34495e',
+            '#c0392b', '#27ae60', '#2980b9', '#f39c12',
+            '#16a085', '#7f8c8d', '#9b59b6', '#ff9ff3',
+            '#e74c3c', '#3498db', '#2ecc71', '#e67e22',
+            '#00cec9', '#6c5ce7', '#fdcb6e', '#e17055',
+            '#00b894', '#0984e3', '#636e72', '#b2bec3',
+            '#ff7675', '#a29bfe', '#ffeaa7', '#fab1a0',
+            '#55efc4', '#81ecec', '#74b9ff', '#a55eea',
+            '#4b7bec', '#45aaf2', '#2d98da', '#3867d6',
+            '#8854d0', '#303952', '#f7b731', '#fa8231',
+            '#eb3b5a', '#20bf6b', '#0fb9b1', '#4b6584'
         ];
 
         // 初始化
