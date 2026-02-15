@@ -291,22 +291,32 @@
             border: 1px solid var(--border-color);
         }
 
-        #projectTitle {
+        #titleOverlay {
             position: absolute;
             top: 24px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 16px;
-            color: var(--text-main);
-            margin: 0;
-            font-weight: 600;
             z-index: 10;
             background: rgba(255,255,255,0.9);
-            padding: 4px 16px;
-            border-radius: 20px;
+            padding: 8px 24px;
+            border-radius: 30px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
+        #projectTitle {
+            font-size: 20px;
+            color: var(--text-main);
+            margin: 0;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+
 
         .chart-wrapper {
             flex: 1;
@@ -606,14 +616,36 @@
                 border-radius: 12px;
             }
 
-            #projectTitle {
-                font-size: 16px !important;
-                margin-bottom: 8px;
+
+            .canvas-container {
+                display: flex;
+                flex-direction: column;
+            }
+
+            #fanChart {
+                height: auto !important;
+                flex: 1;
+            }
+
+            #titleOverlay {
                 position: static !important;
                 transform: none !important;
-                text-align: center;
-                display: block;
+                width: 100% !important;
+                text-align: center !important;
+                margin-bottom: 8px !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
             }
+
+            #projectTitle {
+                font-size: 18px !important;
+                margin-bottom: 0 !important;
+                display: block !important;
+            }
+            
+
             
             /* Hide the absolute title in desktop view to avoid conflict if I changed structure */
             /* Actually, I should just update the inline style in JS or CSS */
@@ -666,9 +698,11 @@
         <!-- 主内容区 -->
         <main class="main-content">
             <div class="chart-container">
-                <h2 id="projectTitle">请选择项目</h2>
                 <div class="chart-wrapper">
                     <div class="canvas-container">
+                        <div id="titleOverlay">
+                            <h2 id="projectTitle">请选择项目</h2>
+                        </div>
                         <canvas id="fanChart"></canvas>
                     </div>
                     <!-- 桌面端右侧图例面板 -->
