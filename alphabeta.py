@@ -134,4 +134,8 @@ def search(game, state, to_play, depth, nnue):
         alpha = max(alpha, best_value)
         
     final_score = best_value * to_play
+    
+    if best_action is None:
+        best_action = legal_actions[0]
+        
     return best_action, final_score
